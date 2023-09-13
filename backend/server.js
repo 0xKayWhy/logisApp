@@ -11,6 +11,7 @@ require('dotenv').config()
 const parcelController=require('./controllers/parcelController')
 const authController=require('./controllers/authcontroller')
 const adminContoller=require('./controllers/adminController')
+console.log("BEfore MONGODB")
 mongoose.connect(process.env.MONGODB_URI)
   .then(() => console.log("Mongo connected"));
 
