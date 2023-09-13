@@ -20,14 +20,14 @@ app.use(cors());
 app.use(express.static(path.join(__dirname,"build")))
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
-// app.use("/", parcelController)
-// app.use("/user",authController)
-// app.use("/admin",adminContoller)
-// app.use("/deliveryguy", parcelController)
+app.use("/", parcelController)
+app.use("/user",authController)
+app.use("/admin",adminContoller)
+app.use("/deliveryguy", parcelController)
 // Create GET request
-app.get("/", (req, res) => {
-  res.send("Express on Vercel");
-});
+// app.get("/", (req, res) => {
+//   res.send("Express on Vercel");
+// });
 
 const PORT=process.env.PORT
 
