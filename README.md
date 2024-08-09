@@ -1,4 +1,4 @@
-# Logistics Management App
+# TrackerYaki
 
 ## Table of Contents
 * [General Info](#general-info)
@@ -49,15 +49,15 @@ This logistics management app is designed to streamline the process of managing 
 ## Overview
 Here are some screenshot from the app in different users' perspective.
 
-![Local Image](./images/mainPage)
+![Local Image](./images/mainPage.png)
 
 Landing page for normal user
 
-![Local Image](./images/adminPage)
+![Local Image](./images/adminPage.png)
 
 Landing page for admin user once logged in
 
-![Local Image](./images/deliveryPage)
+![Local Image](./images/deliveryPage.png)
 
 Landing page for delivery user once logged in
 
