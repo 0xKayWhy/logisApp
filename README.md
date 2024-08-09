@@ -46,3 +46,19 @@ This logistics management app is designed to streamline the process of managing 
 - As this is a team project, communication wihtin the team can prevent the confusion and ensure everyone understand their responsibility and goal achivement.
 - Version control is crucial when committing to the github. It can help to ease the complilation and ensure all team members have the latest code.
 
+## Overview
+Here are some screenshot from the app in different users' perspective.
+
+![Local Image](./images/mainPage)
+
+Landing page for normal user
+
+![Local Image](./images/adminPage)
+
+Landing page for admin user once logged in
+
+![Local Image](./images/deliveryPage)
+
+Landing page for delivery user once logged in
+
+
