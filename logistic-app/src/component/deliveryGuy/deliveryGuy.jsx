@@ -3,48 +3,10 @@ import axiosConfig from "../../config/axios";
 import { Container, Row, Col } from "react-bootstrap";
 import { SyncLoader } from "react-spinners";
 import { UserContext } from "../userContext";
-import { useNavigate } from "react-router-dom";
 
 export function DeliveryGuyPage() {
-  const {isLoggedin, deliveryguy} = useContext(UserContext)
-  const [assignedParcels, setAssignedParcels] = useState([]);
-  const [availableParcels, setAvailableParcels] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const {loading, assignedParcels ,availableParcels, fetchParcels} = useContext(UserContext)
 
-
-
-  const navi = useNavigate()
-
-  const secureCheck = () => {
-    (!isLoggedin ? navi('/login') : (!deliveryguy && navi('/login')))
-  }
-
-  useEffect(()=> {
-    secureCheck()
-  } )
-
-  const fetchParcels = async () => {
-    try {
-      setIsLoading(true);
-
-      const response = await axiosConfig.get(`/deliveryguy/parcels`, {
-        headers: { Authorization: `Bearer ${sessionStorage.getItem("token")}` },
-      });
-
-      const { assignedParcels, availableParcels } = response.data;
-      setAssignedParcels(assignedParcels);
-      setAvailableParcels(availableParcels);
-
-      setIsLoading(false);
-    } catch (e) {
-      console.log(e);
-      setIsLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchParcels();
-  }, []);
 
   const pickupParcel = async (parcelId) => {
     try {
@@ -80,8 +42,6 @@ export function DeliveryGuyPage() {
     }
   };
 
-
-
   return (
     
       
@@ -90,9 +50,9 @@ export function DeliveryGuyPage() {
         <Row>
           <Col md={5}>
             <h3 className="text-center">Your Parcels</h3>
-            {isLoading ? (
+            {loading ? (
               <div className="loading-spinner">
-                <SyncLoader color={"#00008B"} loading={isLoading} />
+                <SyncLoader color={"#00008B"} loading={loading} />
               </div>
             ) : (
               assignedParcels.map((parcel) => (
@@ -116,9 +76,9 @@ export function DeliveryGuyPage() {
           </Col>
           <Col md={5}>
             <h3 className="text-center">Parcels available for Pickup</h3>
-            {isLoading ? (
+            {loading ? (
               <div className="loading-spinner">
-                <SyncLoader color={"#00008B"} loading={isLoading} />
+                <SyncLoader color={"#00008B"} loading={loading} />
               </div>
             ) : (
               availableParcels.map((parcel) => (

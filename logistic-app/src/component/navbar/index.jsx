@@ -1,21 +1,22 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import { Navbar, Container, Nav, Button } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
 import { UserContext } from "../userContext";
 
 export const NavigationBar = () => {
-  const { isLoggedin, setIsLoggedin, admin,setAdmin, setDeliveryguy } =
-    useContext(UserContext);
+  const { isLoggedin, setIsLoggedin,role,setRole } =
+  useContext(UserContext);
   const navi = useNavigate();
   const handleLogout = () => {
     console.log("Logged out");
     sessionStorage.removeItem("token");
+    sessionStorage.removeItem("role");
     setIsLoggedin(false);
-    setAdmin(false);
-    setDeliveryguy(false)
-
     navi("/");
   };
+
+
+
   return (
     <Navbar expand="lg" className="bg-info">
       <Container>
@@ -25,7 +26,7 @@ export const NavigationBar = () => {
           <Nav className="ms-auto">
             {isLoggedin ? (
               <>
-                {admin ? (
+                {role == "admin" ? (
                   <Nav.Link as={Link} to="/admin">
                     Admin
                   </Nav.Link>

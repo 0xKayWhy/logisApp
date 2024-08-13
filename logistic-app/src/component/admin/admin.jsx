@@ -1,27 +1,12 @@
 import { Row, Col, Button, Container } from "react-bootstrap";
-import { useState, useContext, useEffect } from "react";
+import { useState } from "react";
 import { ViewAll } from "./viewAll";
 import { CreateParcel } from "./create";
-import { UserContext } from "../userContext";
-import { useNavigate } from "react-router-dom";
 
 
 export function AdminPage() {
-  const {isLoggedin, admin} = useContext(UserContext)
   const [showAll, setShowAll] = useState(true);
   const [showForm, setShowForm] = useState(false);
-
-  const navi = useNavigate()
-
-  const secureCheck = () => {
-    (!isLoggedin ? navi('/login') : (!admin && navi('/login')))
-  }
-
-  useEffect(()=> {
-    secureCheck()
-  } )
-
-  secureCheck()
 
   return (
     <div>

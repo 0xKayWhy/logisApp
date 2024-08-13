@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import axiosConfig from "../../config/axios";
 import { UserContext } from "../userContext";
 export function ViewAll() {
-  const {allParcels, updateData} = useContext(UserContext)
+  const {allParcels, fetchParcel} = useContext(UserContext)
   const [show, setShow] = useState(false);
   const [select, setSelect] = useState(undefined);
   const [search, setSearch] = useState("");
@@ -34,7 +34,7 @@ export function ViewAll() {
         }
       );
       if (response.status === 200) {
-        updateData()
+        fetchParcel()
         navi("/admin");
         
 
@@ -65,7 +65,7 @@ export function ViewAll() {
         }
       );
       if (response.status === 200) {
-        updateData()
+        fetchParcel()
         navi("/admin");
         
 

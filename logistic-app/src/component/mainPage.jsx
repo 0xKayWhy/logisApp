@@ -1,7 +1,5 @@
-import {Row, Col, Button,Container,Form} from "react-bootstrap";
-import {useState,useContext} from 'react'
-
-import { useNavigate } from "react-router-dom";
+import {Col, Button,Form} from "react-bootstrap";
+import {useContext} from 'react'
 import { UserContext } from "../component/userContext";
 
 
@@ -9,7 +7,6 @@ import { UserContext } from "../component/userContext";
 export default function MainPage(){
 
     const {search, setSearch ,handleSearch} = useContext(UserContext);
-    const navi= useNavigate()
 
         return (
             <div   style={{

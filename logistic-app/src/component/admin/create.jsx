@@ -15,7 +15,7 @@ export function CreateParcel() {
 
   const [flashMessage, setFlashMessage] = useState("");
   const [showFlashMessage, setShowFlashMessage] = useState(false);
-  const {updateData,token} = useContext(UserContext)
+  const {fetchParcel,token} = useContext(UserContext)
 
   const allStation = [
     "Kuala Lumpur",
@@ -60,7 +60,7 @@ export function CreateParcel() {
       if (response.status === 200) {
         setFlashMessage("Parcel created successfully!"); 
         setShowFlashMessage(true);
-        updateData();
+        fetchParcel();
         navi("/admin");
         setTimeout(() => {
             setShowFlashMessage(false);

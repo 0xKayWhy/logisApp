@@ -18,7 +18,6 @@ export default function Tracking() {
         ? searchMap[firstResult.currentLocation]
         : undefined;
       setMap(searchValue);
-      console.log(searchValue);
     }
   }, [result, search, mapRoute]);
 

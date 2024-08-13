@@ -1,12 +1,9 @@
 const express= require('express');
-const { listIndexes } = require('../model/userModel');
 const router = express.Router()
 const authenticateUser = require("../middlewares/authMiddleware")
 
 const seedModel = require("../model/seedModel")
 const UserModel = require("../model/userModel")
-
-// const parcels = require("../model/seedData")
 
 
 
@@ -28,9 +25,7 @@ router.get('/parcels', authenticateUser, async (req, res) => {
       const deliveryGuyId = req.user._id;
       const assignedParcels = parcels.filter((parcel) => parcel.assignedTo == deliveryGuyId.toString());
       const availableParcels = parcels.filter((parcel) => parcel.status === 'created')
-      // console.log(parcels)
-      // console.log(deliveryGuyId.toString())
-      // console.log(assignedParcels)
+
       res.json({ assignedParcels, availableParcels });
     } else {
       res.status(400).json({ error: 'You must be an admin or delivery guy' });
@@ -65,8 +60,6 @@ router.get('/parcels', authenticateUser, async (req, res) => {
         $push:{Myorder: req.params.parcelId}
       })
 
-      console.log(user)
-  
       if (!parcel) {
         return res.status(404).json({ error: 'Parcel not found' });
       }
@@ -91,7 +84,6 @@ router.get('/parcels', authenticateUser, async (req, res) => {
     const updateParcel = await seedModel.findByIdAndUpdate(parcelId,{
       currentLocation : parcel.destination
     })
-    console.log(updateParcel)
 
     const user = await UserModel.findByIdAndUpdate(deliveryGuyId, {
       $pull: { Myorder: parcelId }

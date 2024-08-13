@@ -1,11 +1,12 @@
-import { useState , useContext} from "react";
+import { useState , useContext, useEffect} from "react";
 import axiosConfig from "../config/axios";
 import { useNavigate } from "react-router-dom";
 import { UserContext } from "../component/userContext";
 import { Form, Button, Card, Row, Col, Container } from "react-bootstrap";
+import jwtDecode from "jwt-decode"
 
 export default function Login() {
-  const { setUser, setAdmin } = useContext(UserContext);
+  const {setIsLoggedin, setRole } = useContext(UserContext);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -17,19 +18,14 @@ export default function Login() {
 
     try {
       const res = await axiosConfig.post("/user/login", { username, password });
-      const user = res.data.user;
-      if (res.status === 200 && user.RegisterAs === "Admin") {
+      if(res.status === 200) {
         const token = res.data.token;
+        const roleToken = res.data.role.toLowerCase()
         sessionStorage.setItem("token", token);
-        setAdmin(true);
-        setUser(user);
-        navi("/admin");
-      } else if (res.status === 200 && user.RegisterAs === "DeliveryGuy") {
-        const token = res.data.token;
-        sessionStorage.setItem("token", token);
-        setAdmin(false);
-        setUser(user);
-        navi("/deliveryguy");
+        sessionStorage.setItem("role", roleToken);
+        setIsLoggedin(true)
+        setRole(roleToken)
+        navi(`/${roleToken}`)
       }
     } catch (e) {
       if (e.response && e.response.status === 400) {
