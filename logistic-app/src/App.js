@@ -33,7 +33,7 @@ function App() {
         />
         <Route path="/register" element={<Register />} />
         <Route path="/login" element={<Login />} />
-        <Route path="/track" element={<Tracking />} />
+        <Route path="/track/:trackingId?" element={<Tracking />} />
         <Route path="/" element={<MainPage />} />
         <Route path="*" element={<NotFound />} />
       </Routes>

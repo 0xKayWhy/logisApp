@@ -1,12 +1,21 @@
-import { Row, Col, Container, Table, Button, Form } from "react-bootstrap";
+import { Row, Col, Container, Table} from "react-bootstrap";
 import { useContext, useState, useEffect } from "react";
 import { UserContext } from "../userContext";
 import Map from "./map";
+import { useParams } from "react-router-dom";
+import { TrackBar } from "./trackBar";
 
 export default function Tracking() {
-  const { result } = useContext(UserContext);
-  const { search, setSearch, handleSearch, mapRoute } = useContext(UserContext);
+  const {setSearch, handleSearch, mapRoute, result } = useContext(UserContext);
   const [map, setMap] = useState("");
+  const {trackingId} = useParams()
+  
+  useEffect(() => {
+    if (trackingId) {
+      setSearch(trackingId);
+      handleSearch(trackingId);
+    }
+  }, [trackingId]);
 
   useEffect(() => {
     if (result.length > 0) {
@@ -19,7 +28,7 @@ export default function Tracking() {
         : undefined;
       setMap(searchValue);
     }
-  }, [result, search, mapRoute]);
+  }, [result, mapRoute]);
 
   return (
     <Container>
@@ -35,23 +44,7 @@ export default function Tracking() {
         <Col>
           <Row>
             <Col lg={6} className="mb-4">
-              <Form
-                className="d-flex"
-                onSubmit={(e) => {
-                  e.preventDefault();
-                  handleSearch();
-                }}
-              >
-                <Form.Control
-                  type="search"
-                  placeholder="Tracking Number"
-                  className="me-2"
-                  aria-label="Search"
-                  onChange={(e) => setSearch(e.target.value)}
-                  value={search}
-                />
-                <Button type="submit">Search</Button>
-              </Form>
+                <TrackBar />
             </Col>
           </Row>
         </Col>

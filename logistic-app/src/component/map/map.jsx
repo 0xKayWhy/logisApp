@@ -14,6 +14,7 @@ export default function Map({map}) {
         allowFullScreen=""
         loading="lazy"
         referrerPolicy="no-referrer-when-downgrade"
+        title="Showing location of the parcel"
       ></iframe>
     </div>
   );

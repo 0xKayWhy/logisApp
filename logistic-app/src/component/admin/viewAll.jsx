@@ -1,22 +1,21 @@
-import { Row, Col, Button, Form, Table, Modal } from "react-bootstrap";
-import { useState, useEffect ,useContext} from "react";
+import { Row, Col, Button, Table, Modal, Form } from "react-bootstrap";
+import { useState, useEffect, useContext } from "react";
 import { EditParcel } from "./edit";
 import { useNavigate } from "react-router-dom";
 import axiosConfig from "../../config/axios";
 import { UserContext } from "../userContext";
+
 export function ViewAll() {
-  const {allParcels, fetchParcel} = useContext(UserContext)
+  const { allParcels, fetchParcel } = useContext(UserContext);
   const [show, setShow] = useState(false);
   const [select, setSelect] = useState(undefined);
-  const [search, setSearch] = useState("");
-  const [result, setResult] = useState(allParcels);
-
-
+  const [filter, setFilter] = useState("");
+  const [filtered, setFiltered] = useState(allParcels);
 
   const handleClose = () => setShow(false);
-  const handleShow = (datas) => {
+  const handleShow = (data) => {
     setShow(true);
-    setSelect(datas);
+    setSelect(data);
   };
 
   const navi = useNavigate();
@@ -24,76 +23,84 @@ export function ViewAll() {
   const handleSubmit = async (e, values) => {
     e.preventDefault();
     try {
-        
       const response = await axiosConfig.put(
         `/admin/edit/${values._id}`,
-        values,{
+        values,
+        {
           headers: {
             Authorization: `Bearer ${sessionStorage.getItem("token")}`,
           },
         }
       );
       if (response.status === 200) {
-        fetchParcel()
+        fetchParcel();
         navi("/admin");
-        
-
       }
     } catch (e) {
       console.log(e);
     }
   };
 
-  const handleSearch = () => {
-    const searchResult = allParcels.filter((item) => {
-      const trackingNo = String(item.trackingNo);
-      return trackingNo.includes(search);
-    });
-    setResult(searchResult);
-    setSearch("")
-  };
-
-  const handleDelete = async (datas) => {
+  const handleDelete = async (data) => {
     try {
-      setSelect(datas);
+      setSelect(data);
       const response = await axiosConfig.delete(
-        `/admin/delete/${datas._id}`,
-        datas,{
+        `/admin/delete/${data._id}`,
+        data,
+        {
           headers: {
             Authorization: `Bearer ${sessionStorage.getItem("token")}`,
           },
         }
       );
       if (response.status === 200) {
-        fetchParcel()
+        fetchParcel();
         navi("/admin");
-        
-
       }
     } catch (e) {
       console.log(e);
     }
+  };
+
+  const filterParcel = () => {
+    const newValue = filtered.filter((parcel) => parcel.trackingNo == filter);
+    if (newValue.length === 0) {
+      setFiltered([])
+      return;
+    }
+    setFiltered(newValue);
   };
 
   useEffect(() => {
-    setResult(allParcels); 
-
+    setFiltered(allParcels);
   }, [allParcels]);
+
+  useEffect(() => {
+    if (filter.length === 0) {
+      setFiltered(allParcels);
+    }
+  }, [filter]);
 
   return (
     <Col>
       <Row>
         <Col sm={4} className="mb-4">
-          <Form className="d-flex">
+          <Form
+            className="d-flex"
+            onSubmit={(e) => {
+              e.preventDefault();
+              filterParcel();
+            }}
+          >
             <Form.Control
               type="search"
               placeholder="Tracking Number"
               className="me-2"
               aria-label="Search"
-              onChange={(e) => setSearch(e.target.value)}
-              value={search}
+              onChange={(e) => setFilter(e.target.value)}
+              value={filter}
             />
-            <Button onClick={handleSearch}>Search</Button>
+            <Button type="submit">Search</Button>
           </Form>
         </Col>
       </Row>
@@ -111,30 +118,38 @@ export function ViewAll() {
             <th>Action : </th>
           </tr>
         </thead>
-        {result.map((datas) => (
-          <tbody key={datas.trackingNo} className="mb-3">
+        {filtered.length > 0 ? (
+          filtered.map((data) => (
+            <tbody key={data.trackingNo} className="mb-3">
+              <tr>
+                <td>{data.trackingNo}</td>
+                <td>{data.description}</td>
+                <td>{data.weight} kg</td>
+                <td>{data.unit} pcs</td>
+                <td>{data.origin}</td>
+                <td>{data.destination}</td>
+                <td>{data.currentLocation}</td>
+                <td>{data.status}</td>
+
+                <td>
+                  <Button variant="primary" onClick={() => handleShow(data)}>
+                    Edit
+                  </Button>
+
+                  <Button variant="danger" onClick={() => handleDelete(data)}>
+                    Delete
+                  </Button>
+                </td>
+              </tr>
+            </tbody>
+          ))
+        ) : (
+          <tbody className="text-center">
             <tr>
-              <td>{datas.trackingNo}</td>
-              <td>{datas.description}</td>
-              <td>{datas.weight} kg</td>
-              <td>{datas.unit} pcs</td>
-              <td>{datas.origin}</td>
-              <td>{datas.destination}</td>
-              <td>{datas.currentLocation}</td>
-              <td>{datas.status}</td>
-
-              <td>
-                <Button variant="primary" onClick={() => handleShow(datas)}>
-                  Edit
-                </Button>
-
-                <Button variant="danger" onClick={() => handleDelete(datas)}>
-                  Delete
-                </Button>
-              </td>
+              <td colSpan="9">Parcel Not Found</td>
             </tr>
           </tbody>
-        ))}
+        )}
       </Table>
 
       {/* Modal Edit */}

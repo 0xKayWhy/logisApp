@@ -1,14 +1,13 @@
-import React, { useContext, useEffect } from "react";
+import React, { useContext } from "react";
 import { Navbar, Container, Nav, Button } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
 import { UserContext } from "../userContext";
 
 export const NavigationBar = () => {
-  const { isLoggedin, setIsLoggedin,role,setRole } =
+  const { isLoggedin, setIsLoggedin,role } =
   useContext(UserContext);
   const navi = useNavigate();
   const handleLogout = () => {
-    console.log("Logged out");
     sessionStorage.removeItem("token");
     sessionStorage.removeItem("role");
     setIsLoggedin(false);
@@ -20,13 +19,13 @@ export const NavigationBar = () => {
   return (
     <Navbar expand="lg" className="bg-info">
       <Container>
-        <Navbar.Brand href="/">TrackerYaki</Navbar.Brand>
+        <Navbar.Brand as={Link} to="/">TrackerYaki</Navbar.Brand>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="ms-auto">
             {isLoggedin ? (
               <>
-                {role == "admin" ? (
+                {role === "admin" ? (
                   <Nav.Link as={Link} to="/admin">
                     Admin
                   </Nav.Link>

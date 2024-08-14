@@ -1,9 +1,9 @@
-import { useState , useContext, useEffect} from "react";
+import { useState , useContext} from "react";
 import axiosConfig from "../config/axios";
 import { useNavigate } from "react-router-dom";
 import { UserContext } from "../component/userContext";
 import { Form, Button, Card, Row, Col, Container } from "react-bootstrap";
-import jwtDecode from "jwt-decode"
+
 
 export default function Login() {
   const {setIsLoggedin, setRole } = useContext(UserContext);

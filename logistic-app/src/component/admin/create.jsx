@@ -15,7 +15,7 @@ export function CreateParcel() {
 
   const [flashMessage, setFlashMessage] = useState("");
   const [showFlashMessage, setShowFlashMessage] = useState(false);
-  const {fetchParcel,token} = useContext(UserContext)
+  const {fetchParcel} = useContext(UserContext)
 
   const allStation = [
     "Kuala Lumpur",

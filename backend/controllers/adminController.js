@@ -3,10 +3,11 @@ const router = require('express').Router();
 const seedModel = require('../model/seedModel');
 const authenticateUser = require("../middlewares/authMiddleware")
 
-router.get("/data",authenticateUser, async (req,res) => {
+router.get("/data", async (req,res) => {
     try{
       const database = await seedModel.find()
-      res.json({database})
+      const sortedDatabase = database.sort((a,b)=> a.trackingNo - b.trackingNo)
+      res.json({sortedDatabase})
     }catch(e){
       console.log(e)
     }

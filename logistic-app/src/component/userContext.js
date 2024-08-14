@@ -1,6 +1,7 @@
 import { useEffect, useState, createContext } from "react";
 import axiosConfig from "../config/axios";
 import { useNavigate } from "react-router-dom";
+import { SyncLoader } from "react-spinners";
 
 export const UserContext = createContext(null);
 
@@ -14,7 +15,6 @@ export default function UserProvider({ children }) {
   const [assignedParcels, setAssignedParcels] = useState([]);
   const [availableParcels, setAvailableParcels] = useState([]);
   const [loading, setLoading] = useState(true);
-
 
   const navi = useNavigate();
 
@@ -77,18 +77,11 @@ export default function UserProvider({ children }) {
     },
   ];
 
-
   const fetchParcel = async () => {
-    const token = sessionStorage.getItem("token");
-    if(!token) return;
     try {
-      const allData = await axiosConfig.get("/admin/data", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const allData = await axiosConfig.get("/admin/data");
       if (allData.status === 200) {
-        setAllParcels(allData.data.database);
+        setAllParcels(allData.data.sortedDatabase);
       }
     } catch (err) {
       console.log(err);
@@ -97,7 +90,6 @@ export default function UserProvider({ children }) {
 
   const fetchParcels = async () => {
     try {
-
       const response = await axiosConfig.get(`/deliveryguy/parcels`, {
         headers: { Authorization: `Bearer ${sessionStorage.getItem("token")}` },
       });
@@ -105,13 +97,10 @@ export default function UserProvider({ children }) {
       const { assignedParcels, availableParcels } = response.data;
       setAssignedParcels(assignedParcels);
       setAvailableParcels(availableParcels);
-
     } catch (e) {
       console.log(e);
     }
   };
-
-
 
   useEffect(() => {
     const roleToken = sessionStorage.getItem("role");
@@ -121,27 +110,38 @@ export default function UserProvider({ children }) {
       setIsLoggedin(true);
       setRole(roleToken);
     } else {
-      setIsLoggedin(false)
-      setRole(null)
+      setIsLoggedin(false);
+      setRole(null);
     }
     setLoading(false);
-    if(token && roleToken === "admin"){
-      fetchParcel()
-    } else{
+    if (token && roleToken === "deliveryguy") {
       fetchParcels();
+    } else {
+      fetchParcel();
     }
-
-    setLoading(false)
+    setLoading(false);
   }, [navi]);
 
-  const handleSearch = () => {
-    const searchResult = allParcels.filter((item) => {
-      const trackingNo = String(item.trackingNo);
-      return trackingNo === search;
-    });
+  const handleSearch = async (track) => {
+    setLoading(true)
+    setResult("");
+    if (allParcels.length === 0) {
+      await fetchParcel();
+    }
+    const searchResult = allParcels.filter(
+      (item) => track === String(item.trackingNo)
+    );
+    if (searchResult.length === 0) {
+      setSearch("");
+      navi(`/track/${track}`);
+      setLoading(false);
+      return;
+    }
     setResult(searchResult);
     setSearch("");
-    navi("/track");
+    navi(`/track/${track}`);
+
+    setLoading(false);
   };
 
   const values = {
@@ -163,12 +163,14 @@ export default function UserProvider({ children }) {
     loading,
     assignedParcels,
     availableParcels,
-    fetchParcels
+    fetchParcels,
   };
 
   return (
     <UserContext.Provider value={values}>
-      {loading ? <div>Loading...</div> : children}
-      </UserContext.Provider>
+      {loading ? <div className="loading-spinner centerlize">
+        <SyncLoader color={"#00008B"} loading={loading} />
+      </div> : children}
+    </UserContext.Provider>
   );
 }
