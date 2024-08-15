@@ -23,7 +23,9 @@ const {setSearch, handleSearch,search} = useContext(UserContext)
       onChange={(e) => setSearch(e.target.value)}
       value={search}
     />
-    <Button type="submit">Search</Button>
+    <Button type="submit"  className="d-flex justify-content-center align-items-center">
+    <i className='bx bx-search-alt bx-sm'></i>
+    </Button>
   </Form>
   )
 }

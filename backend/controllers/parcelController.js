@@ -59,7 +59,6 @@ router.get('/parcels', authenticateUser, async (req, res) => {
       const user = await UserModel.findByIdAndUpdate(req.user._id, {
         $push:{Myorder: req.params.parcelId}
       })
-
       if (!parcel) {
         return res.status(404).json({ error: 'Parcel not found' });
       }

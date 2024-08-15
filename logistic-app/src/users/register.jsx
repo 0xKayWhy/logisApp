@@ -1,35 +1,44 @@
-import { Row, Col, Button, Container, Form , Card} from "react-bootstrap";
-import { useState } from "react"
-import axiosConfig from "../config/axios"
-import{useNavigate} from 'react-router-dom'
+import { Row, Col, Button, Container, Form, Card } from "react-bootstrap";
+import { useContext, useState } from "react";
+import axiosConfig from "../config/axios";
+import { useNavigate } from "react-router-dom";
+import { UserContext } from "../component/userContext";
 
-export default function Register(){
-     const [firstName, setFirstName]=useState('')
-     const [lastName, setLastName]=useState('')
-    const [username, setUsername] = useState('')
-    const [password, setPassword] = useState('')
-    const [email, setEmail] = useState('')
-   const [RegisterAs, setRegisterAs]=useState('')
-    
+export default function Register() {
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [newUsername, setNewUsername] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [email, setEmail] = useState("");
+  const [RegisterAs, setRegisterAs] = useState("");
+  const {setUsername, setPassword} = useContext(UserContext)
 
-   const navi = useNavigate()
-    const handleSubmit= async(e) =>{
-        e.preventDefault()
-        try{
-            console.log(firstName)
-            const response= await axiosConfig.post("user/register",{firstName : firstName,lastName:lastName,username,password,email,RegisterAs : RegisterAs})
-           console.log(RegisterAs)
-            if(response.status=== 200){
-                navi('/login')
-            }
-        }catch(e){
-            console.log(e)
-        }
+  const navi = useNavigate();
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setUsername("");
+    setPassword("");
+    try {
+      const response = await axiosConfig.post("user/register", {
+        firstName: firstName,
+        lastName: lastName,
+        username: newUsername,
+        password: newPassword,
+        email,
+        RegisterAs: RegisterAs,
+      });
+      if (response.status === 200) {
+        setNewUsername("");
+        setNewPassword("");
+        navi("/login");
+      }
+    } catch (e) {
+      console.log(e);
     }
+  };
 
-
-    return (
-        <Container>
+  return (
+    <Container>
       <Row className="mt-5 d-flex justify-content-center align-items-center">
         <Col md={8} lg={6} xs={12}>
           <Card className="px-4">
@@ -67,8 +76,8 @@ export default function Register(){
                       <Form.Control
                         type="text"
                         placeholder="Enter your username"
-                        value={username}
-                        onChange={(e) => setUsername(e.target.value)}
+                        value={newUsername}
+                        onChange={(e) => setNewUsername(e.target.value)}
                         required
                       />
                     </Form.Group>
@@ -78,8 +87,8 @@ export default function Register(){
                       <Form.Control
                         type="password"
                         placeholder="Enter your password"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
+                        value={newPassword}
+                        onChange={(e) => setNewPassword(e.target.value)}
                         required
                       />
                     </Form.Group>
@@ -130,5 +139,5 @@ export default function Register(){
         </Col>
       </Row>
     </Container>
-    );
-    }
+  );
+}

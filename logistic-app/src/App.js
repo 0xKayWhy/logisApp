@@ -1,7 +1,7 @@
 import { Route, Routes } from "react-router-dom";
 import "./App.css";
 import { AdminPage } from "./component/admin/admin";
-import Tracking from "./component/map/tracking";
+import Tracking from "./component/track/trackPage";
 import MainPage from "./component/mainPage";
 import Register from "./users/register";
 import Login from "./users/login";

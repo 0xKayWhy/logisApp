@@ -1,4 +1,4 @@
-import { useState , useContext} from "react";
+import { useState , useContext, useEffect} from "react";
 import axiosConfig from "../config/axios";
 import { useNavigate } from "react-router-dom";
 import { UserContext } from "../component/userContext";
@@ -6,9 +6,7 @@ import { Form, Button, Card, Row, Col, Container } from "react-bootstrap";
 
 
 export default function Login() {
-  const {setIsLoggedin, setRole } = useContext(UserContext);
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
+  const {setIsLoggedin, setRole,username ,setUsername, password, setPassword, isLoggedin} = useContext(UserContext);
   const [error, setError] = useState("");
 
   const navi = useNavigate();
@@ -18,6 +16,7 @@ export default function Login() {
 
     try {
       const res = await axiosConfig.post("/user/login", { username, password });
+      
       if(res.status === 200) {
         const token = res.data.token;
         const roleToken = res.data.role.toLowerCase()
@@ -25,7 +24,9 @@ export default function Login() {
         sessionStorage.setItem("role", roleToken);
         setIsLoggedin(true)
         setRole(roleToken)
-        navi(`/${roleToken}`)
+        setUsername("")
+        setPassword("")
+        navi(`/${roleToken}`,{ replace: true })
       }
     } catch (e) {
       if (e.response && e.response.status === 400) {
@@ -35,6 +36,12 @@ export default function Login() {
       }
     }
   };
+
+  useEffect(()=> {
+    if(isLoggedin) return navi("/")
+  },[isLoggedin])
+
+
 
   return (
     <Container>
@@ -53,7 +60,7 @@ export default function Login() {
                       <Form.Control
                         type="text"
                         placeholder="Enter your username"
-                        value={username}
+                        value={username || ""}
                         onChange={(e) => setUsername(e.target.value)}
                       />
                     </Form.Group>
@@ -63,7 +70,7 @@ export default function Login() {
                       <Form.Control
                         type="password"
                         placeholder="Enter your password"
-                        value={password}
+                        value={password || ""}
                         onChange={(e) => setPassword(e.target.value)}
                       />
                     </Form.Group>

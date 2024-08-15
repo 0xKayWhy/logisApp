@@ -1,20 +1,33 @@
-import { Row, Col, Button, Table, Modal, Form } from "react-bootstrap";
+import { Row, Col, Button, Table, Modal, Form, Container } from "react-bootstrap";
 import { useState, useEffect, useContext } from "react";
 import { EditParcel } from "./edit";
 import { useNavigate } from "react-router-dom";
 import axiosConfig from "../../config/axios";
 import { UserContext } from "../userContext";
+import { useSnackbar } from "notistack";
 
 export function ViewAll() {
-  const { allParcels, fetchParcel } = useContext(UserContext);
+  const { allParcels, fetchParcel, oriData } = useContext(UserContext);
   const [show, setShow] = useState(false);
-  const [select, setSelect] = useState(undefined);
+  const [select, setSelect] = useState("");
   const [filter, setFilter] = useState("");
-  const [filtered, setFiltered] = useState(allParcels);
+  const [filtered, setFiltered] = useState([]);
+  const [currentPage, setCurrentPage] = useState(0);
+  const [modelDeleteShow, setModelDeleteShow] = useState(false);
+  const { enqueueSnackbar } = useSnackbar();
+
+  const deleteMessage = "Deleted Successfully!";
+  const updateMessage = "Updated Successfully!";
 
   const handleClose = () => setShow(false);
   const handleShow = (data) => {
     setShow(true);
+    setSelect(data);
+  };
+
+  const handleDeleteClose = () => setModelDeleteShow(false);
+  const handleDeleteShow = (data) => {
+    setModelDeleteShow(true);
     setSelect(data);
   };
 
@@ -34,6 +47,7 @@ export function ViewAll() {
       );
       if (response.status === 200) {
         fetchParcel();
+        enqueueSnackbar(updateMessage, { variant: "success" });
         navi("/admin");
       }
     } catch (e) {
@@ -41,12 +55,11 @@ export function ViewAll() {
     }
   };
 
-  const handleDelete = async (data) => {
+  const handleDelete = async () => {
     try {
-      setSelect(data);
       const response = await axiosConfig.delete(
-        `/admin/delete/${data._id}`,
-        data,
+        `/admin/delete/${select._id}`,
+        select,
         {
           headers: {
             Authorization: `Bearer ${sessionStorage.getItem("token")}`,
@@ -55,7 +68,8 @@ export function ViewAll() {
       );
       if (response.status === 200) {
         fetchParcel();
-        navi("/admin");
+        handleDeleteClose();
+        enqueueSnackbar(deleteMessage, { variant: "success" });
       }
     } catch (e) {
       console.log(e);
@@ -63,13 +77,34 @@ export function ViewAll() {
   };
 
   const filterParcel = () => {
-    const newValue = filtered.filter((parcel) => parcel.trackingNo == filter);
-    if (newValue.length === 0) {
-      setFiltered([])
+    const arrangedParcel = [];
+    const parcels = oriData.filter((parcel) => parcel.trackingNo == filter);
+
+    if (parcels.length === 0) {
+      setFiltered([]);
       return;
+    } else {
+      arrangedParcel.push({ page: 1, data: [parcels[0]] });
     }
-    setFiltered(newValue);
+    setFiltered(arrangedParcel);
+    setCurrentPage(0);
   };
+
+  const handlePrevious = (e) => {
+    e.preventDefault()
+    if(currentPage -1 < 0) return
+    setCurrentPage((prevState) => prevState - 1)
+  }
+
+  const handleNext = (e) => {
+    e.preventDefault()
+    const maxPage = filtered[filtered.length - 1].page
+    if(currentPage + 2 > maxPage){
+      return
+    }
+    setCurrentPage((prevState) => prevState + 1)
+
+  }
 
   useEffect(() => {
     setFiltered(allParcels);
@@ -82,6 +117,7 @@ export function ViewAll() {
   }, [filter]);
 
   return (
+    <Container>
     <Col>
       <Row>
         <Col sm={4} className="mb-4">
@@ -100,7 +136,12 @@ export function ViewAll() {
               onChange={(e) => setFilter(e.target.value)}
               value={filter}
             />
-            <Button type="submit">Search</Button>
+            <Button
+              type="submit"
+              className="d-flex justify-content-center align-items-center"
+            >
+              <i className="bx bx-search-alt bx-sm"></i>
+            </Button>
           </Form>
         </Col>
       </Row>
@@ -119,8 +160,8 @@ export function ViewAll() {
           </tr>
         </thead>
         {filtered.length > 0 ? (
-          filtered.map((data) => (
-            <tbody key={data.trackingNo} className="mb-3">
+          filtered[currentPage].data.map((data, i) => (
+            <tbody key={`${data.trackingNo}-${i}`} className="mb-3">
               <tr>
                 <td>{data.trackingNo}</td>
                 <td>{data.description}</td>
@@ -131,14 +172,19 @@ export function ViewAll() {
                 <td>{data.currentLocation}</td>
                 <td>{data.status}</td>
 
-                <td>
-                  <Button variant="primary" onClick={() => handleShow(data)}>
-                    Edit
+                <td><Col className="d-flex">
+                  <Button variant="primary" onClick={() => handleShow(data)} className="d-flex align-items-center justify-content-center me-2">
+                  <i className='bx bx-edit bx-sm' ></i>
                   </Button>
 
-                  <Button variant="danger" onClick={() => handleDelete(data)}>
-                    Delete
+                  <Button
+                    variant="danger"
+                    onClick={() => handleDeleteShow(data)}
+                    className="d-flex align-items-center justify-content-center"
+                  >
+                    <i className='bx bx-trash bx-sm'></i>
                   </Button>
+                </Col>
                 </td>
               </tr>
             </tbody>
@@ -151,6 +197,11 @@ export function ViewAll() {
           </tbody>
         )}
       </Table>
+      <Row className="d-flex mt-auto">
+        <Col onClick={handlePrevious} xs={4} md={5} className="text-end justify-content-center align-items-center"><i className='bx bx-chevron-left bx-sm'></i></Col>
+        <Col xs={4} md={1} className="text-center">{currentPage + 1}</Col>
+        <Col onClick={handleNext} xs={4} md={5}className="justify-content-center align-items-center"><i className='bx bx-chevron-right bx-sm'></i></Col>
+      </Row>
 
       {/* Modal Edit */}
       <Modal show={show} onHide={handleClose}>
@@ -165,6 +216,29 @@ export function ViewAll() {
           />
         </Modal.Body>
       </Modal>
+
+      {/* Modal delete */}
+      <Modal
+        show={modelDeleteShow}
+        onHide={handleDeleteClose}
+        backdrop="static"
+        keyboard={false}
+        centered
+      >
+        <Modal.Header closeButton>
+          <Modal.Title>Deleting tracking no. {select.trackingNo}</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>Confrim to delete?</Modal.Body>
+        <Modal.Footer>
+          <Button variant="primary" onClick={handleDeleteClose}>
+            Close
+          </Button>
+          <Button variant="danger" onClick={handleDelete}>
+            Delete
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </Col>
+    </Container>
   );
 }

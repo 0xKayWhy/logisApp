@@ -7,6 +7,7 @@ export const UserContext = createContext(null);
 
 export default function UserProvider({ children }) {
   const [allParcels, setAllParcels] = useState([]);
+  const [oriData, setOriData] = useState([])
   const [role, setRole] = useState(null);
   const [user, setUser] = useState({});
   const [isLoggedin, setIsLoggedin] = useState(null);
@@ -15,6 +16,8 @@ export default function UserProvider({ children }) {
   const [assignedParcels, setAssignedParcels] = useState([]);
   const [availableParcels, setAvailableParcels] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [username , setUsername] = useState("")
+  const [password, setPassword] = useState("")
 
   const navi = useNavigate();
 
@@ -81,7 +84,25 @@ export default function UserProvider({ children }) {
     try {
       const allData = await axiosConfig.get("/admin/data");
       if (allData.status === 200) {
-        setAllParcels(allData.data.sortedDatabase);
+        const arrangedParcel = []
+        let pageNo = 1
+        const database = allData.data.sortedDatabase
+        setOriData(database)
+          if(arrangedParcel.length === 0){
+            arrangedParcel.push({page : pageNo, data : []})
+          }
+          for(let i = 0 ; i < database.length ; i++) {
+            if(i % 10 === 0 && i !== 0){
+              pageNo ++
+              arrangedParcel.push({ page: pageNo, data: [] });
+            }
+            if(arrangedParcel[pageNo - 1]) {
+              arrangedParcel[pageNo-1].data.push(database[i])
+            }
+          }
+          return setAllParcels(arrangedParcel)
+      
+        // setAllParcels(allData.data.sortedDatabase);
       }
     } catch (err) {
       console.log(err);
@@ -144,6 +165,10 @@ export default function UserProvider({ children }) {
     setLoading(false);
   };
 
+ 
+
+
+
   const values = {
     user,
     role,
@@ -151,6 +176,7 @@ export default function UserProvider({ children }) {
     setRole,
     allParcels,
     setAllParcels,
+    oriData,
     isLoggedin,
     setIsLoggedin,
     fetchParcel,
@@ -164,6 +190,10 @@ export default function UserProvider({ children }) {
     assignedParcels,
     availableParcels,
     fetchParcels,
+    username,
+    setUsername,
+    password,
+    setPassword
   };
 
   return (

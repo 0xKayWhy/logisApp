@@ -5,7 +5,7 @@ import Map from "./map";
 import { useParams } from "react-router-dom";
 import { TrackBar } from "./trackBar";
 
-export default function Tracking() {
+export default function TrackPage() {
   const {setSearch, handleSearch, mapRoute, result } = useContext(UserContext);
   const [map, setMap] = useState("");
   const {trackingId} = useParams()

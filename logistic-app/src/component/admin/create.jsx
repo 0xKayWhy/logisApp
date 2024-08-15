@@ -1,8 +1,8 @@
 import { Form, Col, Button, InputGroup } from "react-bootstrap";
 import { useState , useContext} from "react";
-import { useNavigate } from "react-router-dom";
 import axiosConfig from "../../config/axios";
 import { UserContext } from "../userContext";
+import { useSnackbar } from "notistack";
 
 export function CreateParcel() {
   const [values, setValues] = useState({
@@ -13,9 +13,10 @@ export function CreateParcel() {
     destination: "",
   });
 
-  const [flashMessage, setFlashMessage] = useState("");
-  const [showFlashMessage, setShowFlashMessage] = useState(false);
   const {fetchParcel} = useContext(UserContext)
+  const { enqueueSnackbar } = useSnackbar()
+
+  const createMessage = "Created Successfully!"
 
   const allStation = [
     "Kuala Lumpur",
@@ -33,8 +34,6 @@ export function CreateParcel() {
     "Kedah",
     "Perlis",
   ];
-
-  const navi = useNavigate();
 
   const set = (item) => {
     return ({ target: { value } }) => {
@@ -58,13 +57,9 @@ export function CreateParcel() {
         destination: "",
       });
       if (response.status === 200) {
-        setFlashMessage("Parcel created successfully!"); 
-        setShowFlashMessage(true);
         fetchParcel();
-        navi("/admin");
-        setTimeout(() => {
-            setShowFlashMessage(false);
-          }, 3000);
+        enqueueSnackbar(createMessage , {variant : "success"})
+
       }
     } catch (e) {
       console.log(e);
@@ -139,7 +134,6 @@ export function CreateParcel() {
         </Form.Group>
         <Button type="submit" className="mb-3">Create</Button>
       </Form>
-      {showFlashMessage && <div className="flash-message">{flashMessage}</div>}
     </Col>
   );
 }

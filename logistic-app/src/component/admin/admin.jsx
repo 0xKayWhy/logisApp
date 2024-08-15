@@ -10,10 +10,10 @@ export function AdminPage() {
 
   return (
     <div>
-      <Container className="mt-3" style={{ marginLeft: "15px" }}>
+      <Container  className="d-flex flex-column min-vh-100" >
         <Row>
           <Col md={2}>
-            <Row className="mb-3">
+            <Row className="m-4">
               <Button
                 variant="primary"
                 onClick={() => {
@@ -28,7 +28,7 @@ export function AdminPage() {
                 View All
               </Button>
             </Row>
-            <Row>
+            <Row className="m-4">
               <Button
                 variant="primary"
                 onClick={() => {
@@ -45,11 +45,16 @@ export function AdminPage() {
             </Row>
           </Col>
           {showAll ? (
-            <ViewAll />
+            <Row>
+              <ViewAll />
+            </Row>
           ) : showForm ? (
-            <CreateParcel  setShowAll={setShowAll}/>
+            <Row>
+              <CreateParcel  setShowAll={setShowAll}/>
+
+            </Row>
           ) : (
-            <Col>Please select</Col>
+            <Col className="m-4">Please select</Col>
           )}
         </Row>
       </Container>
