@@ -1,5 +1,5 @@
 import { Form, Col, InputGroup ,Modal, Button} from "react-bootstrap";
-import { useEffect, useState } from "react";
+import {useState } from "react";
 
 export function EditParcel({ selectEdit, handleSubmit,handleClose }) {
   const [values, setValues] = useState(selectEdit);

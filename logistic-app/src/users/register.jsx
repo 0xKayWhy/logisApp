@@ -1,7 +1,7 @@
 import { Row, Col, Button, Container, Form, Card } from "react-bootstrap";
 import { useContext, useState } from "react";
 import axiosConfig from "../config/axios";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { UserContext } from "../component/userContext";
 
 export default function Register() {
@@ -11,7 +11,7 @@ export default function Register() {
   const [newPassword, setNewPassword] = useState("");
   const [email, setEmail] = useState("");
   const [RegisterAs, setRegisterAs] = useState("");
-  const {setUsername, setPassword} = useContext(UserContext)
+  const { setUsername, setPassword } = useContext(UserContext);
 
   const navi = useNavigate();
   const handleSubmit = async (e) => {
@@ -126,10 +126,10 @@ export default function Register() {
                   </Form>
                   <div className="mt-3">
                     <p className="mb-0 text-center">
-                      Already have an account?{" "}
-                      <a href="/login" className="text-primary fw-bold">
+                      Don't have an account?{" "}
+                      <Link to="/login" className="text-primary fw-bold">
                         Sign in
-                      </a>
+                      </Link>
                     </p>
                   </div>
                 </div>

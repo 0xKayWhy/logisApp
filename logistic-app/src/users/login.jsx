@@ -1,12 +1,19 @@
-import { useState , useContext, useEffect} from "react";
+import { useState, useContext, useEffect } from "react";
 import axiosConfig from "../config/axios";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { UserContext } from "../component/userContext";
 import { Form, Button, Card, Row, Col, Container } from "react-bootstrap";
 
-
 export default function Login() {
-  const {setIsLoggedin, setRole,username ,setUsername, password, setPassword, isLoggedin} = useContext(UserContext);
+  const {
+    setIsLoggedin,
+    setRole,
+    username,
+    setUsername,
+    password,
+    setPassword,
+    isLoggedin,
+  } = useContext(UserContext);
   const [error, setError] = useState("");
 
   const navi = useNavigate();
@@ -16,17 +23,17 @@ export default function Login() {
 
     try {
       const res = await axiosConfig.post("/user/login", { username, password });
-      
-      if(res.status === 200) {
+
+      if (res.status === 200) {
         const token = res.data.token;
-        const roleToken = res.data.role.toLowerCase()
+        const roleToken = res.data.role.toLowerCase();
         sessionStorage.setItem("token", token);
         sessionStorage.setItem("role", roleToken);
-        setIsLoggedin(true)
-        setRole(roleToken)
-        setUsername("")
-        setPassword("")
-        navi(`/${roleToken}`,{ replace: true })
+        setIsLoggedin(true);
+        setRole(roleToken);
+        setUsername("");
+        setPassword("");
+        navi(`/${roleToken}`, { replace: true });
       }
     } catch (e) {
       if (e.response && e.response.status === 400) {
@@ -37,11 +44,9 @@ export default function Login() {
     }
   };
 
-  useEffect(()=> {
-    if(isLoggedin) return navi("/")
-  },[isLoggedin])
-
-
+  useEffect(() => {
+    if (isLoggedin) return navi("/");
+  }, [isLoggedin,navi]);
 
   return (
     <Container className="mt-5">
@@ -64,7 +69,6 @@ export default function Login() {
                         onChange={(e) => setUsername(e.target.value)}
                       />
                     </Form.Group>
-
                     <Form.Group className="mb-3" controlId="formPassword">
                       <Form.Label>Password</Form.Label>
                       <Form.Control
@@ -74,9 +78,8 @@ export default function Login() {
                         onChange={(e) => setPassword(e.target.value)}
                       />
                     </Form.Group>
-
-                    {error && <p className="text-danger">{error}</p>} {/* Display error message */}
-
+                    {error && <p className="text-danger">{error}</p>}{" "}
+                    {/* Display error message */}
                     <div className="d-grid">
                       <Button variant="primary" type="submit">
                         Login
@@ -86,9 +89,9 @@ export default function Login() {
                   <div className="mt-3">
                     <p className="mb-0 text-center">
                       Don't have an account?{" "}
-                      <a href="/register" className="text-primary fw-bold">
+                      <Link to="/register" className="text-primary fw-bold">
                         Sign up
-                      </a>
+                      </Link>
                     </p>
                   </div>
                 </div>

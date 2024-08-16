@@ -133,7 +133,6 @@ export default function UserProvider({ children }) {
       setIsLoggedin(false);
       setRole(null);
     }
-    setLoading(false);
     if (token && roleToken === "deliveryguy") {
       fetchParcels();
     } else {
@@ -163,10 +162,6 @@ export default function UserProvider({ children }) {
 
     setLoading(false);
   };
-
- 
-
-
 
   const values = {
     user,
