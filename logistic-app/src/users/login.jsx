@@ -1,13 +1,12 @@
-import { useState , useContext} from "react";
+import { useState , useContext, useEffect} from "react";
 import axiosConfig from "../config/axios";
 import { useNavigate } from "react-router-dom";
 import { UserContext } from "../component/userContext";
 import { Form, Button, Card, Row, Col, Container } from "react-bootstrap";
 
+
 export default function Login() {
-  const { setUser, setAdmin } = useContext(UserContext);
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
+  const {setIsLoggedin, setRole,username ,setUsername, password, setPassword, isLoggedin} = useContext(UserContext);
   const [error, setError] = useState("");
 
   const navi = useNavigate();
@@ -17,19 +16,17 @@ export default function Login() {
 
     try {
       const res = await axiosConfig.post("/user/login", { username, password });
-      const user = res.data.user;
-      if (res.status === 200 && user.RegisterAs === "Admin") {
+      
+      if(res.status === 200) {
         const token = res.data.token;
+        const roleToken = res.data.role.toLowerCase()
         sessionStorage.setItem("token", token);
-        setAdmin(true);
-        setUser(user);
-        navi("/admin");
-      } else if (res.status === 200 && user.RegisterAs === "DeliveryGuy") {
-        const token = res.data.token;
-        sessionStorage.setItem("token", token);
-        setAdmin(false);
-        setUser(user);
-        navi("/deliveryguy");
+        sessionStorage.setItem("role", roleToken);
+        setIsLoggedin(true)
+        setRole(roleToken)
+        setUsername("")
+        setPassword("")
+        navi(`/${roleToken}`,{ replace: true })
       }
     } catch (e) {
       if (e.response && e.response.status === 400) {
@@ -40,10 +37,16 @@ export default function Login() {
     }
   };
 
+  useEffect(()=> {
+    if(isLoggedin) return navi("/")
+  },[isLoggedin])
+
+
+
   return (
-    <Container>
-      <Row className="d-flex justify-content-center align-items-center mt-5">
-        <Col md={8} lg={6} xs={12}>
+    <Container className="mt-5">
+      <Row className="d-flex justify-content-center align-items-center">
+        <Col md={8} lg={6} xs={12} className="mt-5">
           <Card className="px-4">
             <Card.Body>
               <div className="mb-3 mt-md-4">
@@ -57,7 +60,7 @@ export default function Login() {
                       <Form.Control
                         type="text"
                         placeholder="Enter your username"
-                        value={username}
+                        value={username || ""}
                         onChange={(e) => setUsername(e.target.value)}
                       />
                     </Form.Group>
@@ -67,7 +70,7 @@ export default function Login() {
                       <Form.Control
                         type="password"
                         placeholder="Enter your password"
-                        value={password}
+                        value={password || ""}
                         onChange={(e) => setPassword(e.target.value)}
                       />
                     </Form.Group>

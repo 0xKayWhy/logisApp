@@ -2,7 +2,8 @@ const router=require('express').Router();
 const User=require("../model/userModel")
 const bcrypt= require('bcrypt')
 const jwt=require('jsonwebtoken')
-//const upload=require('multer')
+require('dotenv').config()
+
 
 const authenticateUser = require("../middlewares/authMiddleware")
 
@@ -34,8 +35,8 @@ router.post('/login', async(req,res)=>{
             .json({ message: responseList.USER_PASSWORD_ERROR });
         }
     
-        const token = jwt.sign({user_id: user._id}, "something_secret")
-        res.status(200).json({ token, user });
+        const token = jwt.sign({user_id: user._id}, process.env.SECRET,{expiresIn : "1h"})
+        res.status(200).json({ token, role : user.RegisterAs });
     }catch(e){
         console.log(e)
     }
@@ -44,8 +45,6 @@ router.post('/login', async(req,res)=>{
 router.post("/register", async (req, res) => {
     try {
         const hashedPassword = await bcrypt.hashSync(req.body.password, 10); 
-    //    const User = new User({...req.body, profilePicture: `uploads/${req.file.filename}`});
-    //   await user.save();
       const userDataToSave = {
         firstName: req.body.firstName,
         lastName: req.body.lastName,
@@ -54,15 +53,13 @@ router.post("/register", async (req, res) => {
         email: req.body.email,
         RegisterAs:req.body.RegisterAs,
 
-        // myorder: req.body.myorder
       };
       const user = new User(userDataToSave);
       await user.save();
-      const token = jwt.sign({user_id: user._id}, "something_secret")
+      const token = jwt.sign({user_id: user._id , role : user.RegisterAs}, process.env.SECRET, {expiresIn : "1h"})
       res.status(200).json({ message:responseList.CREATED_SUCCESS, token });
-      console.log(req.body)
     } catch (e) {
-        console.log(e)
+      console.log(e)
       res.status(400).json({ message: responseList.BAD_REQUEST });
     }
   });

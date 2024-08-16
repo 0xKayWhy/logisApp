@@ -1,6 +1,7 @@
 const jwt = require("jsonwebtoken")
 const User = require("../model/userModel")
 const responseList = require ("../config/responselist.js");
+require("dotenv").config();
 
 async function authenticateUser(req, res, next){
     const bearerToken = req.headers.authorization
@@ -12,14 +13,13 @@ async function authenticateUser(req, res, next){
         return res.status(401).json({ message:  responseList.NOT_TOKEN})
     }
     try{
-        const decodedToken = jwt.verify(token, "something_secret")
+        const decodedToken = jwt.verify(token,process.env.SECRET)
         if(!decodedToken){
             return res.status(401).json({ message: responseList.INVALID_TOKEN})
         }
         req.user = await User.findById(decodedToken.user_id)
         next() // move to next func
     }catch(e){
-
         if(e instanceof jwt.TokenExpiredError){ // check if error is instance of TokenExpiredError
             return res.status(401).json({ message: responseList.INVALID_TOKEN })
         }

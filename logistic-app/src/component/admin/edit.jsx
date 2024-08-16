@@ -1,8 +1,9 @@
 import { Form, Col, InputGroup ,Modal, Button} from "react-bootstrap";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export function EditParcel({ selectEdit, handleSubmit,handleClose }) {
   const [values, setValues] = useState(selectEdit);
+
 
   const allStation = [
     "Kuala Lumpur",
@@ -21,7 +22,7 @@ export function EditParcel({ selectEdit, handleSubmit,handleClose }) {
     "Perlis",
   ];
 
-  const status= ["created", "inProgess", 'delivered']
+  const status= ["created", "inProgress", 'delivered']
 
   const handleForm = (e) => {
     handleSubmit(e,values)
@@ -33,6 +34,7 @@ export function EditParcel({ selectEdit, handleSubmit,handleClose }) {
       setValues((prevState) => ({ ...prevState, [item]: value }));
     };
   };
+
 
 
   return (
