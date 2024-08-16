@@ -86,7 +86,7 @@ export function ViewAll({ currentPage, setCurrentPage }) {
 
   const filterParcel = () => {
     const arrangedParcel = [];
-    const parcels = oriData.filter((parcel) => parcel.trackingNo == filter);
+    const parcels = oriData.filter((parcel) => parcel.trackingNo === filter);
 
     if (parcels.length === 0) {
       setFiltered([]);
@@ -100,13 +100,13 @@ export function ViewAll({ currentPage, setCurrentPage }) {
 
   useEffect(() => {
     setFiltered(allParcels);
-  }, [allParcels]);
+  }, [allParcels,setFiltered]);
 
   useEffect(() => {
     if (filter.length === 0) {
       setFiltered(allParcels);
     }
-  }, [filter]);
+  }, [filter,setFiltered,allParcels]);
 
   //check if currentPage still valid
   useEffect(()=> {
@@ -114,16 +114,10 @@ export function ViewAll({ currentPage, setCurrentPage }) {
       return
     }
     const maxPage = filtered[filtered.length - 1].page
-    console.log(maxPage,currentPage,"1st tier")
     if(maxPage === currentPage){
-      console.log(maxPage,currentPage,"2nd tier")
       setCurrentPage(maxPage - 1)
     }
-  },[filtered])
-
-  useEffect(()=> {
-    console.log(currentPage)
-  },[currentPage])
+  },[filtered,currentPage,setCurrentPage])
 
   return (
     <Container>
