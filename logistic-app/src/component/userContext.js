@@ -18,6 +18,7 @@ export default function UserProvider({ children }) {
   const [loading, setLoading] = useState(true);
   const [username , setUsername] = useState("")
   const [password, setPassword] = useState("")
+  const [filtered, setFiltered] = useState([]);
 
   const navi = useNavigate();
 
@@ -101,8 +102,6 @@ export default function UserProvider({ children }) {
             }
           }
           return setAllParcels(arrangedParcel)
-      
-        // setAllParcels(allData.data.sortedDatabase);
       }
     } catch (err) {
       console.log(err);
@@ -149,7 +148,7 @@ export default function UserProvider({ children }) {
     if (allParcels.length === 0) {
       await fetchParcel();
     }
-    const searchResult = allParcels.filter(
+    const searchResult = oriData.filter(
       (item) => track === String(item.trackingNo)
     );
     if (searchResult.length === 0) {
@@ -193,7 +192,9 @@ export default function UserProvider({ children }) {
     username,
     setUsername,
     password,
-    setPassword
+    setPassword,
+    filtered,
+    setFiltered
   };
 
   return (

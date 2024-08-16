@@ -40,7 +40,7 @@ export default function Register() {
   return (
     <Container>
       <Row className="mt-5 d-flex justify-content-center align-items-center">
-        <Col md={8} lg={6} xs={12}>
+        <Col md={8} lg={6} xs={12} className="mt-5">
           <Card className="px-4">
             <Card.Body>
               <div className="mb-3 mt-md-4">

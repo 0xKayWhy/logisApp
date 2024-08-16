@@ -34,7 +34,7 @@ export default function MainPage() {
 
   return (
     <Container className="text-center">
-      <Col>
+      <Col className="mt-5 d-flex flex-direction: row">
       <Row className="mt-5 d-flex">
       <h1 className="mb-5">Track and Trace your Parcel</h1>
       <div className="d-flex justify-content-center mb-5">

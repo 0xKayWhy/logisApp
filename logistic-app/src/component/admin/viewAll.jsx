@@ -1,4 +1,12 @@
-import { Row, Col, Button, Table, Modal, Form, Container } from "react-bootstrap";
+import {
+  Row,
+  Col,
+  Button,
+  Table,
+  Modal,
+  Form,
+  Container,
+} from "react-bootstrap";
 import { useState, useEffect, useContext } from "react";
 import { EditParcel } from "./edit";
 import { useNavigate } from "react-router-dom";
@@ -6,13 +14,13 @@ import axiosConfig from "../../config/axios";
 import { UserContext } from "../userContext";
 import { useSnackbar } from "notistack";
 
-export function ViewAll() {
-  const { allParcels, fetchParcel, oriData } = useContext(UserContext);
+export function ViewAll({ currentPage, setCurrentPage }) {
+  const { allParcels, fetchParcel, oriData, setFiltered, filtered } =
+    useContext(UserContext);
   const [show, setShow] = useState(false);
   const [select, setSelect] = useState("");
   const [filter, setFilter] = useState("");
-  const [filtered, setFiltered] = useState([]);
-  const [currentPage, setCurrentPage] = useState(0);
+
   const [modelDeleteShow, setModelDeleteShow] = useState(false);
   const { enqueueSnackbar } = useSnackbar();
 
@@ -90,22 +98,6 @@ export function ViewAll() {
     setCurrentPage(0);
   };
 
-  const handlePrevious = (e) => {
-    e.preventDefault()
-    if(currentPage -1 < 0) return
-    setCurrentPage((prevState) => prevState - 1)
-  }
-
-  const handleNext = (e) => {
-    e.preventDefault()
-    const maxPage = filtered[filtered.length - 1].page
-    if(currentPage + 2 > maxPage){
-      return
-    }
-    setCurrentPage((prevState) => prevState + 1)
-
-  }
-
   useEffect(() => {
     setFiltered(allParcels);
   }, [allParcels]);
@@ -116,92 +108,112 @@ export function ViewAll() {
     }
   }, [filter]);
 
+  //check if currentPage still valid
+  useEffect(()=> {
+    if(filtered.length === 0 ){
+      return
+    }
+    const maxPage = filtered[filtered.length - 1].page
+    console.log(maxPage,currentPage,"1st tier")
+    if(maxPage === currentPage){
+      console.log(maxPage,currentPage,"2nd tier")
+      setCurrentPage(maxPage - 1)
+    }
+  },[filtered])
+
+  useEffect(()=> {
+    console.log(currentPage)
+  },[currentPage])
+
   return (
     <Container>
-    <Col>
-      <Row>
-        <Col sm={4} className="mb-4">
-          <Form
-            className="d-flex"
-            onSubmit={(e) => {
-              e.preventDefault();
-              filterParcel();
-            }}
-          >
-            <Form.Control
-              type="search"
-              placeholder="Tracking Number"
-              className="me-2"
-              aria-label="Search"
-              onChange={(e) => setFilter(e.target.value)}
-              value={filter}
-            />
-            <Button
-              type="submit"
-              className="d-flex justify-content-center align-items-center"
+      <Col>
+        <Row>
+          <Col sm={4} className="mb-4">
+            <Form
+              className="d-flex"
+              onSubmit={(e) => {
+                e.preventDefault();
+                filterParcel();
+              }}
             >
-              <i className="bx bx-search-alt bx-sm"></i>
-            </Button>
-          </Form>
-        </Col>
-      </Row>
-      <Table striped="columns" bordered>
-        <thead>
-          <tr>
-            <th>Tracking No : </th>
-            <th>Description : </th>
-            <th>Weight : </th>
-            <th>Unit : </th>
-            <th>Origin : </th>
-            <th>Destination : </th>
-            <th>Current Location : </th>
-            <th>Status : </th>
-            <th>Action : </th>
-          </tr>
-        </thead>
-        {filtered.length > 0 ? (
-          filtered[currentPage].data.map((data, i) => (
-            <tbody key={`${data.trackingNo}-${i}`} className="mb-3">
+              <Form.Control
+                type="search"
+                placeholder="Tracking Number"
+                className="me-2"
+                aria-label="Search"
+                onChange={(e) => setFilter(e.target.value)}
+                value={filter}
+              />
+              <Button
+                type="submit"
+                className="d-flex justify-content-center align-items-center"
+              >
+                <i className="bx bx-search-alt bx-sm"></i>
+              </Button>
+            </Form>
+          </Col>
+        </Row>
+        <Table striped="columns" bordered>
+          <thead>
+            <tr>
+              <th>No : </th>
+              <th>Tracking No : </th>
+              <th>Description : </th>
+              <th>Weight : </th>
+              <th>Unit : </th>
+              <th>Origin : </th>
+              <th>Destination : </th>
+              <th>Current Location : </th>
+              <th>Status : </th>
+              <th>Action : </th>
+            </tr>
+          </thead>
+          {filtered.length > 0 && filtered[currentPage] ? (
+            filtered[currentPage].data.map((data, i) => (
+              <tbody key={`${data.trackingNo}-${i}`} className="mb-3 text-center">
+                <tr>
+                  <td>{(i+1) % 10 === 0  ? currentPage*10+i+1 : `${currentPage}`+(i+1)}</td>
+                  <td>{data.trackingNo}</td>
+                  <td>{data.description}</td>
+                  <td>{data.weight} kg</td>
+                  <td>{data.unit} pcs</td>
+                  <td>{data.origin}</td>
+                  <td>{data.destination}</td>
+                  <td>{data.currentLocation}</td>
+                  <td>{data.status}</td>
+
+                  <td>
+                    <Col className="d-flex">
+                      <Button
+                        variant="primary"
+                        onClick={() => handleShow(data)}
+                        className="d-flex align-items-center justify-content-center me-2"
+                      >
+                        <i className="bx bx-edit bx-sm"></i>
+                      </Button>
+
+                      <Button
+                        variant="danger"
+                        onClick={() => handleDeleteShow(data)}
+                        className="d-flex align-items-center justify-content-center"
+                      >
+                        <i className="bx bx-trash bx-sm"></i>
+                      </Button>
+                    </Col>
+                  </td>
+                </tr>
+              </tbody>
+            ))
+          ) : (
+            <tbody className="text-center">
               <tr>
-                <td>{data.trackingNo}</td>
-                <td>{data.description}</td>
-                <td>{data.weight} kg</td>
-                <td>{data.unit} pcs</td>
-                <td>{data.origin}</td>
-                <td>{data.destination}</td>
-                <td>{data.currentLocation}</td>
-                <td>{data.status}</td>
-
-                <td><Col className="d-flex">
-                  <Button variant="primary" onClick={() => handleShow(data)} className="d-flex align-items-center justify-content-center me-2">
-                  <i className='bx bx-edit bx-sm' ></i>
-                  </Button>
-
-                  <Button
-                    variant="danger"
-                    onClick={() => handleDeleteShow(data)}
-                    className="d-flex align-items-center justify-content-center"
-                  >
-                    <i className='bx bx-trash bx-sm'></i>
-                  </Button>
-                </Col>
-                </td>
+                <td colSpan="9">Parcel Not Found</td>
               </tr>
             </tbody>
-          ))
-        ) : (
-          <tbody className="text-center">
-            <tr>
-              <td colSpan="9">Parcel Not Found</td>
-            </tr>
-          </tbody>
-        )}
-      </Table>
-      <Row className="d-flex mt-auto">
-        <Col onClick={handlePrevious} xs={4} md={5} className="text-end justify-content-center align-items-center"><i className='bx bx-chevron-left bx-sm'></i></Col>
-        <Col xs={4} md={1} className="text-center">{currentPage + 1}</Col>
-        <Col onClick={handleNext} xs={4} md={5}className="justify-content-center align-items-center"><i className='bx bx-chevron-right bx-sm'></i></Col>
-      </Row>
+          )}
+        </Table>
+      </Col>
 
       {/* Modal Edit */}
       <Modal show={show} onHide={handleClose}>
@@ -238,7 +250,6 @@ export function ViewAll() {
           </Button>
         </Modal.Footer>
       </Modal>
-    </Col>
     </Container>
   );
 }

@@ -1,12 +1,21 @@
+import { useContext } from "react";
 import "./index.css";
+import { Image, Button } from "react-bootstrap";
+import { NavLink } from "react-router-dom";
+import { UserContext } from "../userContext";
 
 export const NotFound = () => {
+  const {role} = useContext(UserContext)
+
   return (
     <div className="not-found-container">
-      <h1 className="fst-italic font-monospace fw-bold">
+      <h1 className="fst-italic font-monospace fw-bold mb-5">
         404 - Page Not Found
       </h1>
-      <img className="mt-5" src="https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExYW11bnE0djkyaGs3NWdhMXRna2Y0dzExd2VjMXRydjZ6amhrbTc0ZyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/Ju7l5y9osyymQ/giphy.gif" alt="rickRolled"/>
+      <NavLink to={`/${role}`}>
+      <Button>Back to {role === "deliveryguy" ? "Delivery" : "Admin"}</Button>
+      </NavLink>
+      <Image className="mt-5" src="https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExYW11bnE0djkyaGs3NWdhMXRna2Y0dzExd2VjMXRydjZ6amhrbTc0ZyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/Ju7l5y9osyymQ/giphy.gif" alt="rickRolled"/>
     </div>
   );
 };

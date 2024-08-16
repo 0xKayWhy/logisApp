@@ -1,4 +1,4 @@
-import { Form, Col, Button, InputGroup } from "react-bootstrap";
+import { Form, Col, Button, InputGroup, Container } from "react-bootstrap";
 import { useState , useContext} from "react";
 import axiosConfig from "../../config/axios";
 import { UserContext } from "../userContext";
@@ -35,10 +35,8 @@ export function CreateParcel() {
     "Perlis",
   ];
 
-  const set = (item) => {
-    return ({ target: { value } }) => {
-      setValues((prevState) => ({ ...prevState, [item]: value }));
-    };
+  const handleChange = (item) => (e) => {
+    setValues((prevState) => ({ ...prevState, [item]: e.target.value }));
   };
 
   const handleSubmit = async (e) => {
@@ -67,6 +65,7 @@ export function CreateParcel() {
   };
 
   return (
+    <Container>
     <Col>
       <Form onSubmit={handleSubmit}>
         <Form.Group className="mb-3" controlId="description.id">
@@ -75,8 +74,9 @@ export function CreateParcel() {
             as="textarea"
             rows={3}
             required
-            onChange={set("description")}
+            onChange={handleChange("description")}
             value={values.description}
+            maxLength={30}
           />
         </Form.Group>
         <Form.Label id="weight.id">Weight</Form.Label>
@@ -84,8 +84,9 @@ export function CreateParcel() {
           <Form.Control
             htmlFor="weight.id"
             required
-            onChange={set("weight")}
+            onChange={handleChange("weight")}
             value={values.weight}
+            maxLength={4}
           />
           <InputGroup.Text>kg</InputGroup.Text>
           <InputGroup.Text>0.00</InputGroup.Text>
@@ -95,8 +96,9 @@ export function CreateParcel() {
           <Form.Control
             htmlFor="unit.id"
             required
-            onChange={set("unit")}
+            onChange={handleChange("unit")}
             value={values.unit}
+            maxLength={3}
           />
           <InputGroup.Text>pcs</InputGroup.Text>
         </InputGroup>
@@ -106,10 +108,10 @@ export function CreateParcel() {
           <Form.Select
             aria-label="Default select example"
             required
-            onChange={set("origin")}
+            onChange={handleChange("origin")}
             value={values.origin}
           >
-            <option>Please select</option>
+            <option value="">Please select</option>
             {allStation.map((state) => (
               <option key={state} value={state}>
                 {state}
@@ -121,10 +123,11 @@ export function CreateParcel() {
           <Form.Label>Destination</Form.Label>
           <Form.Select
             aria-label="Default select example"
-            onChange={set("destination")}
+            onChange={handleChange("destination")}
             value={values.destination}
+            required
           >
-            <option>Please select</option>
+            <option value="">Please select</option>
             {allStation.map((state) => (
               <option key={state} value={state}>
                 {state}
@@ -135,5 +138,6 @@ export function CreateParcel() {
         <Button type="submit" className="mb-3">Create</Button>
       </Form>
     </Col>
+    </Container>
   );
 }

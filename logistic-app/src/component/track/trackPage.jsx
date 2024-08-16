@@ -33,7 +33,7 @@ export default function TrackPage() {
   return (
     <Container>
       <Row>
-        <Row>
+        <Row className="mt-5">
           <Col className="mb-3 mt-5">
             <h1>Track and Trace</h1>
             </Col>
