@@ -86,8 +86,7 @@ export function ViewAll({ currentPage, setCurrentPage }) {
 
   const filterParcel = () => {
     const arrangedParcel = [];
-    const parcels = oriData.filter((parcel) => parcel.trackingNo === filter);
-
+    const parcels = oriData.filter((parcel) => parcel.trackingNo == filter);
     if (parcels.length === 0) {
       setFiltered([]);
       return;
