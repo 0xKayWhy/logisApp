@@ -5,7 +5,7 @@ import axios from "axios";
 const axiosConfig = axios.create({
   // .. configure axios baseURL
   // baseURL: baseURL
-  baseURL : process.env.REACT_APP_BASE_URL || "/"
+  baseURL : "/"
 
 });
 
