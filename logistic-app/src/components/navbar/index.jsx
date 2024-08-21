@@ -1,43 +1,21 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext } from "react";
 import { Navbar, Container, Nav, Button } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
 import { UserContext } from "../userContext";
-import axiosConfig from "../../config/axios";
 
 export const NavigationBar = () => {
-  const { isLoggedin, setIsLoggedin, role } = useContext(UserContext);
-  const [user, setUser] = useState("");
+  const { isLoggedin, setIsLoggedin, user} = useContext(UserContext);
 
   const navi = useNavigate();
 
   //clear user data once logged oiut
   const handleLogout = () => {
     sessionStorage.removeItem("token");
-    sessionStorage.removeItem("role");
+    sessionStorage.removeItem(", user");
     setIsLoggedin(false);
     navi("/");
   };
 
-  //retrieve user profile from backend once logged in and display on navBar
-  const currentUser = async () => {
-    try {
-      const userRes = await axiosConfig.get("/user/user", {
-        headers: { Authorization: `Bearer ${sessionStorage.getItem("token")}` },
-      });
-      if (userRes.status === 200) {
-        setUser(userRes.data.firstName);
-      }
-    } catch (e) {
-      console.log(e);
-    }
-  };
-
-  //checking on user profile
-  useEffect(() => {
-    if (isLoggedin) {
-      currentUser();
-    }
-  }, [isLoggedin]);
 
   return (
     <Navbar expand="lg" className="bg-info fixed-top">
@@ -56,7 +34,7 @@ export const NavigationBar = () => {
                 <Nav.Link as={Link} to="/track">
                   Track
                 </Nav.Link>
-                {role === "admin" ? (
+                {user === "admin" ? (
                   <Nav.Link as={Link} to="/admin">
                     Admin
                   </Nav.Link>

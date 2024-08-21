@@ -10,7 +10,7 @@ export default function UserProvider({ children }) {
   const [allParcels, setAllParcels] = useState([]);
   const [oriData, setOriData] = useState([])
   const [role, setRole] = useState(null);
-  const [user, setUser] = useState({});
+  const [user, setUser] = useState("");
   const [isLoggedin, setIsLoggedin] = useState(null);
   const [result, setResult] = useState(allParcels);
   const [search, setSearch] = useState("");
@@ -71,6 +71,20 @@ export default function UserProvider({ children }) {
     }
   };
 
+    //retrieve user profile from backend once logged in and display on navBar
+    const fetchUser = async () => {
+      try {
+        const userRes = await axiosConfig.get("/user/user", {
+          headers: { Authorization: `Bearer ${sessionStorage.getItem("token")}` },
+        });
+        if (userRes.status === 200) {
+          setUser(userRes.data.firstName);
+        }
+      } catch (e) {
+        console.log(e);
+      }
+    };
+
  // Fetch parcels data based on role
   useEffect(() => {
     const fetchData = async () => {
@@ -79,6 +93,7 @@ export default function UserProvider({ children }) {
       const token = sessionStorage.getItem("token");
 
       if (roleToken && token) {
+        await fetchUser()
         setIsLoggedin(true);
         setRole(roleToken);
         if (roleToken === "deliveryguy") {
@@ -95,6 +110,8 @@ export default function UserProvider({ children }) {
 
     fetchData(); // Fetch data on component mount
   }, [navi]);
+
+  
 
 
   //when user enter tracking no. in the searchBar, redirect them to relavent page and display the details data
