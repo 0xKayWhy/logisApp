@@ -14,8 +14,10 @@ export default function Login() {
     setPassword,
     isLoggedin,
     setLoading,
+    role
   } = useContext(UserContext);
   const [error, setError] = useState("");
+  const {loading} = useContext(UserContext)
 
   const navi = useNavigate();
 
@@ -23,12 +25,9 @@ export default function Login() {
   //set role and token to user once logged in
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+    setLoading(true);
     try {
-      setLoading(true);
-
       const res = await axiosConfig.post("/user/login", { username, password });
-
       if (res.status === 200) {
         const token = res.data.token;
         const roleToken = res.data.role.toLowerCase();
@@ -38,7 +37,6 @@ export default function Login() {
         setRole(roleToken);
         setUsername("");
         setPassword("");
-        navi(`/${roleToken}`, { replace: true });
       }
     } catch (e) {
       if (e.response && e.response.status === 400) {
@@ -47,14 +45,16 @@ export default function Login() {
         setError("An error occurred. Please try again later.");
       }
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
   };
 
   //check if user is logged in and redirect to homepage if true
   useEffect(() => {
-    if (isLoggedin) return navi("/");
-  }, [isLoggedin, navi]);
+    if (isLoggedin && !loading) {
+      navi(`/${role}`);
+    };
+  }, [isLoggedin, navi, loading]);
 
   return (
     <Container className="mt-5">

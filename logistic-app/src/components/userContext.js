@@ -71,24 +71,29 @@ export default function UserProvider({ children }) {
     }
   };
 
-  //check if user is logged in and set their role in sessionStorage
+ // Fetch parcels data based on role
   useEffect(() => {
-    const roleToken = sessionStorage.getItem("role");
-    const token = sessionStorage.getItem("token");
+    const fetchData = async () => {
+      setLoading(true);
+      const roleToken = sessionStorage.getItem("role");
+      const token = sessionStorage.getItem("token");
 
-    if (roleToken) {
-      setIsLoggedin(true);
-      setRole(roleToken);
-    } else {
-      setIsLoggedin(false);
-      setRole(null);
-    }
-    if (token && roleToken === "deliveryguy") {
-      fetchDeliveryParcels();
-    } else {
-      fetchParcel();
-    }
-    setLoading(false);
+      if (roleToken && token) {
+        setIsLoggedin(true);
+        setRole(roleToken);
+        if (roleToken === "deliveryguy") {
+          await fetchDeliveryParcels();
+        } else {
+          await fetchParcel();
+        }
+      } else {
+        setIsLoggedin(false);
+        setRole(null);
+      }
+      setLoading(false);
+    };
+
+    fetchData(); // Fetch data on component mount
   }, [navi]);
 
 
