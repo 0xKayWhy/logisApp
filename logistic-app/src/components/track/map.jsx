@@ -1,7 +1,7 @@
 import React from "react";
 
 
-
+//google map setting
 export default function Map({map}) {
 
   return (

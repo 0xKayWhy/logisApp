@@ -3,6 +3,7 @@ import { useState , useContext} from "react";
 import axiosConfig from "../../config/axios";
 import { UserContext } from "../userContext";
 import { useSnackbar } from "notistack";
+import {allStation} from '../../assets/mapData'
 
 export function CreateParcel() {
   const [values, setValues] = useState({
@@ -18,27 +19,14 @@ export function CreateParcel() {
 
   const createMessage = "Created Successfully!"
 
-  const allStation = [
-    "Kuala Lumpur",
-    "Sabah",
-    "Kelantan",
-    "Pahang",
-    "Terengganu",
-    "Malacca",
-    "Sarawak",
-    "Negeri Sembilan",
-    "Perak",
-    "Penang",
-    "Selangor",
-    "Johor",
-    "Kedah",
-    "Perlis",
-  ];
 
+  //handle data input from user dynamically
   const handleChange = (item) => (e) => {
     setValues((prevState) => ({ ...prevState, [item]: e.target.value }));
   };
 
+
+  //post data to server on create
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {

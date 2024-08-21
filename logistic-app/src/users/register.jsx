@@ -2,7 +2,7 @@ import { Row, Col, Button, Container, Form, Card } from "react-bootstrap";
 import { useContext, useState } from "react";
 import axiosConfig from "../config/axios";
 import { useNavigate, Link } from "react-router-dom";
-import { UserContext } from "../component/userContext";
+import { UserContext } from "../components/userContext";
 
 export default function Register() {
   const [firstName, setFirstName] = useState("");
@@ -14,6 +14,8 @@ export default function Register() {
   const { setUsername, setPassword } = useContext(UserContext);
 
   const navi = useNavigate();
+
+  //redirect user to login page once registered successfully
   const handleSubmit = async (e) => {
     e.preventDefault();
     setUsername("");
@@ -112,7 +114,7 @@ export default function Register() {
                         onChange={(e) => setRegisterAs(e.target.value)}
                         required
                       >
-                        <option>Please Select</option>
+                        <option value="">Please Select</option>
                         <option value="Admin">Admin</option>
                         <option value="DeliveryGuy">Delivery Guy</option>
                       </Form.Select>

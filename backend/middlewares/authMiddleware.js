@@ -3,6 +3,7 @@ const User = require("../model/userModel")
 const responseList = require ("../config/responselist.js");
 require("dotenv").config();
 
+//check user authority consistantly if they are using protected route
 async function authenticateUser(req, res, next){
     const bearerToken = req.headers.authorization
     if(!bearerToken){

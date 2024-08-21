@@ -5,9 +5,10 @@ import { SyncLoader } from "react-spinners";
 import { UserContext } from "../userContext";
 
 export function DeliveryGuyPage() {
-  const {loading, assignedParcels ,availableParcels, fetchParcels} = useContext(UserContext)
+  const {loading, assignedParcels ,availableParcels, fetchDeliveryParcels} = useContext(UserContext)
 
 
+  //assign parcel to specific delivery user
   const pickupParcel = async (parcelId) => {
     try {
       await axiosConfig.put(
@@ -19,12 +20,14 @@ export function DeliveryGuyPage() {
           },
         }
       );
-      fetchParcels();
+      fetchDeliveryParcels();
     } catch (e) {
       console.log(e);
     }
   };
 
+
+  //update parcel data to after delivered
   const deliverParcel = async (parcelId) => {
     try {
       await axiosConfig.put(
@@ -36,7 +39,7 @@ export function DeliveryGuyPage() {
           },
         }
       );
-      fetchParcels();
+      fetchDeliveryParcels();
     } catch (e) {
       console.log(e);
     }

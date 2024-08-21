@@ -6,7 +6,7 @@ import reportWebVitals from './reportWebVitals';
 import "bootstrap/dist/css/bootstrap.min.css"
 import {BrowserRouter as BR} from "react-router-dom"
 import { SnackbarProvider } from 'notistack'
-import UserProvider from './component/userContext';
+import UserProvider from './components/userContext';
 
 
 

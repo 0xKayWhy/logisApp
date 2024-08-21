@@ -1,7 +1,7 @@
 import { useState, useContext, useEffect } from "react";
 import axiosConfig from "../config/axios";
 import { useNavigate, Link } from "react-router-dom";
-import { UserContext } from "../component/userContext";
+import { UserContext } from "../components/userContext";
 import { Form, Button, Card, Row, Col, Container } from "react-bootstrap";
 
 export default function Login() {
@@ -13,15 +13,20 @@ export default function Login() {
     password,
     setPassword,
     isLoggedin,
+    setLoading,
   } = useContext(UserContext);
   const [error, setError] = useState("");
 
   const navi = useNavigate();
 
+
+  //set role and token to user once logged in
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     try {
+      setLoading(true);
+
       const res = await axiosConfig.post("/user/login", { username, password });
 
       if (res.status === 200) {
@@ -41,12 +46,15 @@ export default function Login() {
       } else {
         setError("An error occurred. Please try again later.");
       }
+    } finally {
+      setLoading(false);
     }
   };
 
+  //check if user is logged in and redirect to homepage if true
   useEffect(() => {
     if (isLoggedin) return navi("/");
-  }, [isLoggedin,navi]);
+  }, [isLoggedin, navi]);
 
   return (
     <Container className="mt-5">

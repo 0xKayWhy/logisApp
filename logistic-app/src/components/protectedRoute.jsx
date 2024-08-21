@@ -1,17 +1,12 @@
 import React, { useContext} from "react";
 import { UserContext } from "./userContext";
 import { Navigate } from "react-router-dom";
-import { SyncLoader } from "react-spinners";
 
 
+//check on user status consistantly if they are eligible to visit the page
 export const ProtectedRoute = ({ children, requiredRole }) => {
-  const { isLoggedin, role, loading} = useContext(UserContext);
+  const { isLoggedin, role} = useContext(UserContext);
 
-  if (loading) {
-    <div className="loading-spinner">
-    <SyncLoader color={"#00008B"} loading={loading} />
-  </div>
-  }
 
   if (!isLoggedin || role !== requiredRole) {
     return <Navigate to="/" replace />;

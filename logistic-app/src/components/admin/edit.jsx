@@ -1,34 +1,21 @@
 import { Form, Col, InputGroup ,Modal, Button} from "react-bootstrap";
 import {useState } from "react";
+import { allStation } from "../../assets/mapData";
 
 export function EditParcel({ selectEdit, handleSubmit,handleClose }) {
   const [values, setValues] = useState(selectEdit);
 
 
-  const allStation = [
-    "Kuala Lumpur",
-    "Sabah",
-    "Kelantan",
-    "Pahang",
-    "Terengganu",
-    "Malacca",
-    "Sarawak",
-    "Negeri Sembilan",
-    "Perak",
-    "Penang",
-    "Selangor",
-    "Johor",
-    "Kedah",
-    "Perlis",
-  ];
 
   const status= ["created", "inProgress", 'delivered']
 
+
+  //handle data edited from user
   const handleForm = (e) => {
     handleSubmit(e,values)
   } 
 
-
+  //handle all the edit data dynamically
   const set = (item) => {
     return ({ target: { value } }) => {
       setValues((prevState) => ({ ...prevState, [item]: value }));

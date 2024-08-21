@@ -9,6 +9,8 @@ export const NavigationBar = () => {
   const [user, setUser] = useState("");
 
   const navi = useNavigate();
+
+  //clear user data once logged oiut
   const handleLogout = () => {
     sessionStorage.removeItem("token");
     sessionStorage.removeItem("role");
@@ -16,6 +18,7 @@ export const NavigationBar = () => {
     navi("/");
   };
 
+  //retrieve user profile from backend once logged in and display on navBar
   const currentUser = async () => {
     try {
       const userRes = await axiosConfig.get("/user/user", {
@@ -29,6 +32,7 @@ export const NavigationBar = () => {
     }
   };
 
+  //checking on user profile
   useEffect(() => {
     if (isLoggedin) {
       currentUser();

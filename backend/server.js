@@ -1,6 +1,5 @@
 const express= require('express')
 const app=express()
-const seedModel = require('./model/seedModel')
 const cors = require('cors');
 const path = require("path")
 
@@ -24,10 +23,7 @@ app.use("/", parcelController)
 app.use("/user",authController)
 app.use("/admin",adminContoller)
 app.use("/deliveryguy", parcelController)
-// Create GET request
-// app.get("/", (req, res) => {
-//   res.send("Express on Vercel");
-// });
+
 
 const PORT=process.env.PORT
 

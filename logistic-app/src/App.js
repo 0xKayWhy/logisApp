@@ -1,14 +1,14 @@
 import { Route, Routes } from "react-router-dom";
 import "./App.css";
-import { AdminPage } from "./component/admin/admin";
-import Tracking from "./component/track/trackPage";
-import MainPage from "./component/mainPage";
+import { AdminPage } from "./components/admin/admin";
+import Tracking from "./components/track/trackPage";
+import MainPage from "./components/mainPage";
 import Register from "./users/register";
 import Login from "./users/login";
-import { DeliveryGuyPage } from "./component/deliveryGuy/deliveryGuy";
-import { NavigationBar } from "./component/navbar";
-import { NotFound } from "./component/notFound";
-import { ProtectedRoute } from "./component/protectedRoute";
+import { DeliveryGuyPage } from "./components/deliveryGuy/deliveryGuy";
+import { NavigationBar } from "./components/navbar";
+import { NotFound } from "./components/notFound";
+import { ProtectedRoute } from "./components/protectedRoute";
 
 function App() {
   return (

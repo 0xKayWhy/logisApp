@@ -10,6 +10,7 @@ export default function TrackPage() {
   const [map, setMap] = useState("");
   const {trackingId} = useParams()
   
+  //keep the trackingId onload when user refresh the page or send link to other user
   useEffect(() => {
     if (trackingId) {
       setSearch(trackingId);
@@ -17,6 +18,7 @@ export default function TrackPage() {
     }
   }, [trackingId]);
 
+  //check if the searching is valid and display the map
   useEffect(() => {
     if (result.length > 0) {
       const firstResult = result[0];

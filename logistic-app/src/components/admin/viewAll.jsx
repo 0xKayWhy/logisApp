@@ -19,7 +19,7 @@ export function ViewAll({ currentPage, setCurrentPage }) {
     useContext(UserContext);
   const [show, setShow] = useState(false);
   const [select, setSelect] = useState("");
-  const [filter, setFilter] = useState("");
+  const [filter, setFilter] = useState(""); 
 
   const [modelDeleteShow, setModelDeleteShow] = useState(false);
   const { enqueueSnackbar } = useSnackbar();
@@ -27,12 +27,14 @@ export function ViewAll({ currentPage, setCurrentPage }) {
   const deleteMessage = "Deleted Successfully!";
   const updateMessage = "Updated Successfully!";
 
+  //handle model for edit section
   const handleClose = () => setShow(false);
   const handleShow = (data) => {
     setShow(true);
     setSelect(data);
   };
 
+  //handle model for delete section
   const handleDeleteClose = () => setModelDeleteShow(false);
   const handleDeleteShow = (data) => {
     setModelDeleteShow(true);
@@ -41,6 +43,7 @@ export function ViewAll({ currentPage, setCurrentPage }) {
 
   const navi = useNavigate();
 
+  //interect with server for edited data
   const handleSubmit = async (e, values) => {
     e.preventDefault();
     try {
@@ -63,6 +66,7 @@ export function ViewAll({ currentPage, setCurrentPage }) {
     }
   };
 
+  //interect with server for deleted data
   const handleDelete = async () => {
     try {
       const response = await axiosConfig.delete(
@@ -84,6 +88,7 @@ export function ViewAll({ currentPage, setCurrentPage }) {
     }
   };
 
+  //allow user to filter parcel based on trackingNo
   const filterParcel = () => {
     const arrangedParcel = [];
     const parcels = oriData.filter((parcel) => parcel.trackingNo == filter);
@@ -97,10 +102,12 @@ export function ViewAll({ currentPage, setCurrentPage }) {
     setCurrentPage(0);
   };
 
+  //set filtered data on page load
   useEffect(() => {
     setFiltered(allParcels);
   }, [allParcels,setFiltered]);
 
+  //once user cleared search, display all data
   useEffect(() => {
     if (filter.length === 0) {
       setFiltered(allParcels);

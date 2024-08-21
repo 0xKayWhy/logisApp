@@ -10,7 +10,7 @@ const seedData = [
     trackingNo: 10000000,
     description: "Grocery",
     origin: "Kuala Lumpur",
-    destination: "Subang",
+    destination: "Melaka",
     currentLocation: "Kuala Lumpur",
     status: "inProgress",
     weight: 6,

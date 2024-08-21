@@ -1,28 +1,23 @@
-import { useEffect, useState, createContext } from "react";
-import axiosConfig from "../config/axios";
-import { useNavigate } from "react-router-dom";
-import { SyncLoader } from "react-spinners";
 
-export const UserContext = createContext(null);
 
-export default function UserProvider({ children }) {
-  const [allParcels, setAllParcels] = useState([]);
-  const [oriData, setOriData] = useState([])
-  const [role, setRole] = useState(null);
-  const [user, setUser] = useState({});
-  const [isLoggedin, setIsLoggedin] = useState(null);
-  const [result, setResult] = useState(allParcels);
-  const [search, setSearch] = useState("");
-  const [assignedParcels, setAssignedParcels] = useState([]);
-  const [availableParcels, setAvailableParcels] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [username , setUsername] = useState("")
-  const [password, setPassword] = useState("")
-  const [filtered, setFiltered] = useState([]);
+export const allStation = [
+    "Kuala Lumpur",
+    "Sabah",
+    "Kelantan",
+    "Pahang",
+    "Terengganu",
+    "Malacca",
+    "Sarawak",
+    "Negeri Sembilan",
+    "Perak",
+    "Penang",
+    "Selangor",
+    "Johor",
+    "Kedah",
+    "Perlis",
+  ];
 
-  const navi = useNavigate();
-
-  const mapRoute = [
+ export const mapRoute = [
     {
       "Kuala Lumpur":
         "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d127482.68825017031!2d101.60458852720367!3d3.1385026607594853!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x31cc362abd08e7d3%3A0x232e1ff540d86c99!2sKuala%20Lumpur%2C%20Federal%20Territory%20of%20Kuala%20Lumpur!5e0!3m2!1sen!2smy!4v1688517755784!5m2!1sen!2smy",
@@ -80,123 +75,3 @@ export default function UserProvider({ children }) {
         "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d321328.68372480254!2d100.12711531910844!3d6.460339226659708!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x304ed60c3503e52d%3A0x1c72bb4e3d9c16bc!2sPerlis!5e0!3m2!1sen!2smy!4v1688729129951!5m2!1sen!2smy",
     },
   ];
-
-  const fetchParcel = async () => {
-    try {
-      const allData = await axiosConfig.get("/admin/data");
-      if (allData.status === 200) {
-        const arrangedParcel = []
-        let pageNo = 1
-        const database = allData.data.sortedDatabase
-        setOriData(database)
-          if(arrangedParcel.length === 0){
-            arrangedParcel.push({page : pageNo, data : []})
-          }
-          for(let i = 0 ; i < database.length ; i++) {
-            if(i % 10 === 0 && i !== 0){
-              pageNo ++
-              arrangedParcel.push({ page: pageNo, data: [] });
-            }
-            if(arrangedParcel[pageNo - 1]) {
-              arrangedParcel[pageNo-1].data.push(database[i])
-            }
-          }
-          return setAllParcels(arrangedParcel)
-      }
-    } catch (err) {
-      console.log(err);
-    }
-  };
-
-  const fetchParcels = async () => {
-    try {
-      const response = await axiosConfig.get(`/deliveryguy/parcels`, {
-        headers: { Authorization: `Bearer ${sessionStorage.getItem("token")}` },
-      });
-
-      const { assignedParcels, availableParcels } = response.data;
-      setAssignedParcels(assignedParcels);
-      setAvailableParcels(availableParcels);
-    } catch (e) {
-      console.log(e);
-    }
-  };
-
-  useEffect(() => {
-    const roleToken = sessionStorage.getItem("role");
-    const token = sessionStorage.getItem("token");
-
-    if (roleToken) {
-      setIsLoggedin(true);
-      setRole(roleToken);
-    } else {
-      setIsLoggedin(false);
-      setRole(null);
-    }
-    if (token && roleToken === "deliveryguy") {
-      fetchParcels();
-    } else {
-      fetchParcel();
-    }
-    setLoading(false);
-  }, [navi]);
-
-  const handleSearch = async (track) => {
-    setLoading(true)
-    setResult("");
-    if (allParcels.length === 0) {
-      await fetchParcel();
-    }
-    const searchResult = oriData.filter(
-      (item) => track === String(item.trackingNo)
-    );
-    if (searchResult.length === 0) {
-      setSearch("");
-      navi(`/track/${track}`);
-      setLoading(false);
-      return;
-    }
-    setResult(searchResult);
-    setSearch("");
-    navi(`/track/${track}`);
-
-    setLoading(false);
-  };
-
-  const values = {
-    user,
-    role,
-    setUser,
-    setRole,
-    allParcels,
-    setAllParcels,
-    oriData,
-    isLoggedin,
-    setIsLoggedin,
-    fetchParcel,
-    result,
-    setResult,
-    handleSearch,
-    search,
-    setSearch,
-    mapRoute,
-    loading,
-    assignedParcels,
-    availableParcels,
-    fetchParcels,
-    username,
-    setUsername,
-    password,
-    setPassword,
-    filtered,
-    setFiltered
-  };
-
-  return (
-    <UserContext.Provider value={values}>
-      {loading ? <div className="loading-spinner centerlize">
-        <SyncLoader color={"#00008B"} loading={loading} />
-      </div> : children}
-    </UserContext.Provider>
-  );
-}

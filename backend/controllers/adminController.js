@@ -3,6 +3,7 @@ const router = require('express').Router();
 const seedModel = require('../model/seedModel');
 const authenticateUser = require("../middlewares/authMiddleware")
 
+//get all data from server
 router.get("/data", async (req,res) => {
     try{
       const database = await seedModel.find()
@@ -14,6 +15,8 @@ router.get("/data", async (req,res) => {
     
     
 })
+
+//admin create new parcel based on input from user
 router.post("/create",authenticateUser,async (req,res) => {
     try{
         const dataSize = await seedModel.find()
@@ -32,6 +35,7 @@ router.post("/create",authenticateUser,async (req,res) => {
     }
 })
 
+//admin edit parcel based on input from user
 router.put("/edit/:id",authenticateUser, async (req,res) => {
     try {
         const update = await seedModel.findByIdAndUpdate(req.params.id, {
@@ -47,6 +51,7 @@ router.put("/edit/:id",authenticateUser, async (req,res) => {
 
 })
 
+//admin delete seleceted parcel
 router.delete("/delete/:id", async (req,res) => {
     try {
         const update = await seedModel.findByIdAndDelete(req.params.id)

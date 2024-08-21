@@ -3,6 +3,7 @@ import { UserContext } from '../userContext';
 import { Form , Button } from 'react-bootstrap';
 
 
+//reuseable trackBar in mainPage and trackPage
 export const TrackBar = () => {
 
 const {setSearch, handleSearch,search} = useContext(UserContext)

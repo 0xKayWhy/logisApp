@@ -9,6 +9,8 @@ const authenticateUser = require("../middlewares/authMiddleware")
 
 
 const responseList=require('../config/responselist')
+
+//response with user data 
 router.get("/user",authenticateUser, async(req,res)=>{
   try{
         req.user.username=""
@@ -19,6 +21,7 @@ router.get("/user",authenticateUser, async(req,res)=>{
   }
 })
 
+//grant token to user after logged in
 router.post('/login', async(req,res)=>{
     try{
         const user = await User.findOne({ username: req.body.username });
@@ -42,6 +45,8 @@ router.post('/login', async(req,res)=>{
     }
 })
 
+
+//create new user
 router.post("/register", async (req, res) => {
     try {
         const hashedPassword = await bcrypt.hashSync(req.body.password, 10); 

@@ -11,7 +11,7 @@ const UserModel = require("../model/userModel")
 router.use(express.json());
 
 
-// admin can view all parcels, delivery guy can view parcels available for pickup 
+// admin can view all parcels, delivery can view parcels available for pickup 
 // and parcels assigned to them
 router.get('/parcels', authenticateUser, async (req, res) => {
   const parcels = await seedModel.find()
@@ -21,7 +21,7 @@ router.get('/parcels', authenticateUser, async (req, res) => {
       res.json({parcels}); // change to return data from database
 
     } else if (req.user.RegisterAs === 'DeliveryGuy') {
-      // Delivery guy can view assigned parcels and available parcels for pickup
+      // Delivery can view assigned parcels and available parcels for pickup
       const deliveryGuyId = req.user._id;
       const assignedParcels = parcels.filter((parcel) => parcel.assignedTo == deliveryGuyId.toString());
       const availableParcels = parcels.filter((parcel) => parcel.status === 'created')
@@ -33,22 +33,8 @@ router.get('/parcels', authenticateUser, async (req, res) => {
 
   });
   
-  // admins can create new parcels
-  router.post('/parcels', authenticateUser, async (req, res) => {
-    if (req.user.RegisterAs === 'Admin') {
-      try {
-        const parcels = new seedModel(req.body);
-        await parcels.save();
-        res.status(200).json({ message: 'Parcel created' });
-      } catch (error) {
-        res.status(500).json({ error: 'An error occured' });
-      }
-    } else {
-      res.status(401).json({ error: 'Not authorised to create parcels' });
-    }
-  });
   
-  // delivery guy can accept parcel parcel gets assigned to them
+  // delivery can accept parcel parcel gets assigned to them
   router.put('/parcels/:parcelId/assign', authenticateUser, async (req, res) => {
     try {
       const parcelId = req.params.parcelId;

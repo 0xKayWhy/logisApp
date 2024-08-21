@@ -4,6 +4,7 @@ import { Image, Button } from "react-bootstrap";
 import { NavLink } from "react-router-dom";
 import { UserContext } from "../userContext";
 
+//display 404 whenever user search for undefined path
 export const NotFound = () => {
   const {role} = useContext(UserContext)
 

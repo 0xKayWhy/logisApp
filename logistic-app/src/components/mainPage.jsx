@@ -26,6 +26,7 @@ export default function MainPage() {
     }
   ]
 
+  //direct user to login page based on the sample selected
   const handleLoginClick =  (username, password) => {
     setUsername(username)
     setPassword(password)
