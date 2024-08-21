@@ -11,7 +11,7 @@ export const NavigationBar = () => {
   //clear user data once logged oiut
   const handleLogout = () => {
     sessionStorage.removeItem("token");
-    sessionStorage.removeItem("user");
+    sessionStorage.removeItem("role");
     setIsLoggedin(false);
     navi("/");
   };
