@@ -4,22 +4,20 @@ import {
   Button,
   Table,
   Modal,
-  Form,
   Container,
 } from "react-bootstrap";
-import { useState, useEffect, useContext } from "react";
+import { useState, useContext } from "react";
 import { EditParcel } from "./edit";
 import { useNavigate } from "react-router-dom";
 import axiosConfig from "../../config/axios";
 import { UserContext } from "../userContext";
 import { useSnackbar } from "notistack";
 
-export function ViewAll({ currentPage, setCurrentPage }) {
-  const { allParcels, fetchParcel, oriData, setFiltered, filtered } =
+export function ViewAll({currentPage}) {
+  const {fetchParcel, filtered,} =
     useContext(UserContext);
   const [show, setShow] = useState(false);
   const [select, setSelect] = useState("");
-  const [filter, setFilter] = useState(""); 
 
   const [modelDeleteShow, setModelDeleteShow] = useState(false);
   const { enqueueSnackbar } = useSnackbar();
@@ -88,72 +86,8 @@ export function ViewAll({ currentPage, setCurrentPage }) {
     }
   };
 
-  //allow user to filter parcel based on trackingNo
-  const filterParcel = () => {
-    const arrangedParcel = [];
-    const parcels = oriData.filter((parcel) => parcel.trackingNo == filter);
-    if (parcels.length === 0) {
-      setFiltered([]);
-      return;
-    } else {
-      arrangedParcel.push({ page: 1, data: [parcels[0]] });
-    }
-    setFiltered(arrangedParcel);
-    setCurrentPage(0);
-  };
-
-  //set filtered data on page load
-  useEffect(() => {
-    setFiltered(allParcels);
-  }, [allParcels,setFiltered]);
-
-  //once user cleared search, display all data
-  useEffect(() => {
-    if (filter.length === 0) {
-      setFiltered(allParcels);
-    }
-  }, [filter,setFiltered,allParcels]);
-
-  //check if currentPage still valid
-  useEffect(()=> {
-    if(filtered.length === 0 ){
-      return
-    }
-    const maxPage = filtered[filtered.length - 1].page
-    if(maxPage === currentPage){
-      setCurrentPage(maxPage - 1)
-    }
-  },[filtered,currentPage,setCurrentPage])
-
   return (
     <Container>
-      <Col>
-        <Row>
-          <Col sm={4} className="mb-4">
-            <Form
-              className="d-flex"
-              onSubmit={(e) => {
-                e.preventDefault();
-                filterParcel();
-              }}
-            >
-              <Form.Control
-                type="search"
-                placeholder="Tracking Number"
-                className="me-2"
-                aria-label="Search"
-                onChange={(e) => setFilter(e.target.value)}
-                value={filter}
-              />
-              <Button
-                type="submit"
-                className="d-flex justify-content-center align-items-center"
-              >
-                <i className="bx bx-search-alt bx-sm"></i>
-              </Button>
-            </Form>
-          </Col>
-        </Row>
         <Table striped="columns" bordered>
           <thead>
             <tr>
@@ -171,7 +105,7 @@ export function ViewAll({ currentPage, setCurrentPage }) {
           </thead>
           {filtered.length > 0 && filtered[currentPage] ? (
             filtered[currentPage].data.map((data, i) => (
-              <tbody key={`${data.trackingNo}-${i}`} className="mb-3 text-center">
+              <tbody key={`${data.trackingNo}-${i}`} className="text-center">
                 <tr>
                   <td>{(i+1) % 10 === 0  ? currentPage*10+i+1 : `${currentPage}`+(i+1)}</td>
                   <td>{data.trackingNo}</td>
@@ -213,7 +147,6 @@ export function ViewAll({ currentPage, setCurrentPage }) {
             </tbody>
           )}
         </Table>
-      </Col>
 
       {/* Modal Edit */}
       <Modal show={show} onHide={handleClose}>

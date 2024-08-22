@@ -3,7 +3,7 @@ import { UserContext } from "../userContext";
 import { Row, Col } from "react-bootstrap";
 
 export const PageCount = ({currentPage,setCurrentPage}) => {
-  const {filtered } = useContext(UserContext);
+  const {filtered, } = useContext(UserContext);
 
 
   //load the previou pages onClick
@@ -24,16 +24,16 @@ export const PageCount = ({currentPage,setCurrentPage}) => {
   };
 
   return (
-    <div>
-      <Row className={currentPage >= 0 ? " mb-3" : "collapse"}>
-        <Col onClick={handlePrevious} xs={4} md={5} className="text-end">
-          <i className="bx bx-chevron-left bx-sm"></i>
+    <div className="sticky__footer">
+      <Row className={currentPage >= 0 ?? "collapse"}>
+        <Col  xs={4} md={5} className="text-end">
+          <i onClick={handlePrevious} className="bx bx-chevron-left bx-sm hover__button"></i>
         </Col>
         <Col xs={4} md={1} className="text-center align-self-start">
           {currentPage + 1}
         </Col>
-        <Col onClick={handleNext} xs={4} md={5}>
-          <i className="bx bx-chevron-right bx-sm"></i>
+        <Col  xs={4} md={5}>
+          <i  onClick={handleNext} className="bx bx-chevron-right bx-sm hover__button"></i>
         </Col>
       </Row>
     </div>

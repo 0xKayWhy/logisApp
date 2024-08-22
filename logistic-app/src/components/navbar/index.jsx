@@ -4,7 +4,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { UserContext } from "../userContext";
 
 export const NavigationBar = () => {
-  const { isLoggedin, setIsLoggedin, user} = useContext(UserContext);
+  const { isLoggedin, setIsLoggedin, user, setRole, role, setUser} = useContext(UserContext);
 
   const navi = useNavigate();
 
@@ -12,13 +12,15 @@ export const NavigationBar = () => {
   const handleLogout = () => {
     sessionStorage.removeItem("token");
     sessionStorage.removeItem("role");
+    setRole("");
+    setUser("")
     setIsLoggedin(false);
     navi("/");
   };
 
 
   return (
-    <Navbar expand="lg" className="bg-info fixed-top">
+    <Navbar expand="lg" className="bg-info">
       <Container className="text-center">
         <Navbar.Brand as={Link} to="/">
           TrackerYaki
@@ -34,7 +36,7 @@ export const NavigationBar = () => {
                 <Nav.Link as={Link} to="/track">
                   Track
                 </Nav.Link>
-                {user === "admin" ? (
+                {role === "admin" ? (
                   <Nav.Link as={Link} to="/admin">
                     Admin
                   </Nav.Link>

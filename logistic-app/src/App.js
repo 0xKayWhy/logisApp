@@ -9,35 +9,25 @@ import { DeliveryGuyPage } from "./components/deliveryGuy/deliveryGuy";
 import { NavigationBar } from "./components/navbar";
 import { NotFound } from "./components/notFound";
 import { ProtectedRoute } from "./components/protectedRoute";
+import { PageCount } from "./components/pageCount";
+import { Container, Col } from "react-bootstrap";
 
 function App() {
   return (
-    <div>
-      <NavigationBar />
-      <Routes>
-        <Route
-          path="/admin"
-          element={
-            <ProtectedRoute requiredRole="admin" replace>
-              <AdminPage />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/deliveryguy"
-          element={
-            <ProtectedRoute requiredRole="deliveryguy" replace>
-              <DeliveryGuyPage />
-            </ProtectedRoute>
-          }
-        />
-        <Route path="/register" element={<Register />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/track/:trackingId?" element={<Tracking />} />
-        <Route path="/" element={<MainPage />} />
-        <Route path="*" element={<NotFound />} />
-      </Routes>
-    </div>
+<Container fluid className="overflow__disable p-0">
+  <NavigationBar />
+  <Col>
+    <Routes>
+      <Route path="/admin" element={<ProtectedRoute requiredRole="admin" replace><AdminPage /></ProtectedRoute>} />
+      <Route path="/deliveryguy" element={<ProtectedRoute requiredRole="deliveryguy" replace><DeliveryGuyPage /></ProtectedRoute>} />
+      <Route path="/register" element={<Register />} />
+      <Route path="/login" element={<Login />} />
+      <Route path="/track/:trackingId?" element={<Tracking />} />
+      <Route path="/" element={<MainPage />} />
+      <Route path="*" element={<NotFound />} />
+    </Routes>
+  </Col>
+</Container>
   );
 }
 

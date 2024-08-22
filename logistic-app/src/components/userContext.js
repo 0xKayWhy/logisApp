@@ -9,17 +9,18 @@ export const UserContext = createContext(null);
 export default function UserProvider({ children }) {
   const [allParcels, setAllParcels] = useState([]);
   const [oriData, setOriData] = useState([])
-  const [role, setRole] = useState(null);
+  const [role, setRole] = useState("");
   const [user, setUser] = useState("");
   const [isLoggedin, setIsLoggedin] = useState(null);
   const [result, setResult] = useState(allParcels);
   const [search, setSearch] = useState("");
   const [assignedParcels, setAssignedParcels] = useState([]);
-  const [availableParcels, setAvailableParcels] = useState([]);
+  const [availableParcels, setAvailableParcels] = useState([]); 
   const [loading, setLoading] = useState(true);
   const [username , setUsername] = useState("")
   const [password, setPassword] = useState("")
   const [filtered, setFiltered] = useState([]);
+
 
   const navi = useNavigate();
 
@@ -164,7 +165,7 @@ export default function UserProvider({ children }) {
     setPassword,
     filtered,
     setFiltered,
-    setLoading
+    setLoading,
   };
 
   return (
