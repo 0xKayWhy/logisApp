@@ -88,7 +88,7 @@ export function ViewAll({currentPage}) {
 
   return (
     <Container>
-        <Table striped="columns" bordered>
+        <Table striped="columns" bordered responsive>
           <thead>
             <tr>
               <th>No : </th>
