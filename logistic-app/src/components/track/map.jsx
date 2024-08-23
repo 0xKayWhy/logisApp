@@ -8,9 +8,7 @@ export default function Map({map}) {
     <div className="google-map-code">
       <iframe
         src={map}
-        width="600"
-        height="450"
-        style={{border:0}}
+        style={{ border: 0, width: "100%", height: "100%" }}
         allowFullScreen=""
         loading="lazy"
         referrerPolicy="no-referrer-when-downgrade"

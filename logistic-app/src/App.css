@@ -25,3 +25,23 @@
   background-color: rgb(228, 222, 222);
   color: #646161;
 }
+
+.google-map-code {
+  width: 600px !important; 
+  height: 450px;
+}
+
+
+@media screen and (max-width: 768px) {
+  .google-map-code {
+    height: 300px;
+    width: 100%;
+  } 
+}
+
+@media screen and (max-width: 375px) {
+  .google-map-code {
+    height: 200px;
+    width: 100%;
+  }
+}
